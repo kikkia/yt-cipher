@@ -107,3 +107,17 @@ curl -X POST http://localhost:8001/get_sts \
   "player_url": "https://..."
 }'
 ```
+
+
+## Metrics
+
+There is a Prometheus-compatible metrics endpoint at `/metrics`.
+### Exposed Metrics
+
+- `http_requests_total`: Total number of HTTP requests.
+- `http_request_duration_seconds`: Latency of HTTP requests.
+- `http_requests_errors_total`: Total number of HTTP requests that resulted in an error.
+- `cache_hits_total`: Total number of cache hits for player scripts.
+- `cache_misses_total`: Total number of cache misses for player scripts.
+- `cache_size`: The current number of player scripts in the cache.
+

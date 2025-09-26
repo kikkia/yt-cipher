@@ -1,6 +1,7 @@
 import { crypto } from "https://deno.land/std@0.140.0/crypto/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.140.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.140.0/path/mod.ts";
+import { cacheHitsTotal, cacheMissesTotal, cacheSize } from "./monitoring.ts";
 
 export const CACHE_DIR = join(Deno.cwd(), 'player_cache');
 
@@ -14,16 +15,19 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
 
     try {
         await Deno.stat(filePath);
+        cacheHitsTotal.add(1);
         return filePath;
     } catch (error) {
         if (error instanceof Deno.errors.NotFound) {
             console.log(`Cache miss for player: ${playerUrl}. Fetching...`);
+            cacheMissesTotal.add(1);
             const response = await fetch(playerUrl);
             if (!response.ok) {
                 throw new Error(`Failed to fetch player from ${playerUrl}: ${response.statusText}`);
             }
             const playerContent = await response.text();
             await Deno.writeTextFile(filePath, playerContent);
+            cacheSize.add(1);
             console.log(`Saved player to cache: ${filePath}`);
             return filePath;
         }
@@ -34,4 +38,10 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
 export async function initializeCache() {
     await ensureDir(CACHE_DIR);
     console.log(`Player cache directory ensured at: ${CACHE_DIR}`);
+
+    let fileCount = 0;
+    for await (const _ of Deno.readDir(CACHE_DIR)) {
+        fileCount++;
+    }
+    cacheSize.add(fileCount);
 }
