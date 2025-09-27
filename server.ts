@@ -3,11 +3,20 @@ import { initializeWorkers } from "./src/workerPool.ts";
 import { initializeCache } from "./src/playerCache.ts";
 import { handleDecryptSignature } from "./src/handlers/decryptSignature.ts";
 import { handleGetSts } from "./src/handlers/getSts.ts";
-import { withPlayerUrlValidation } from "./src/middleware.ts";
+import { withPlayerUrlValidation, withMetrics } from "./src/middleware.ts";
+import { registry } from "./src/metrics.ts";
 
 const API_TOKEN = Deno.env.get("API_TOKEN");
 
-async function handler(req: Request): Promise<Response> {
+async function baseHandler(req: Request): Promise<Response> {
+    const { pathname } = new URL(req.url);
+
+    if (pathname === '/metrics') {
+        return new Response(registry.metrics(), {
+            headers: { "Content-Type": "text/plain" },
+        });
+    }
+
     const authHeader = req.headers.get("authorization");
     if (API_TOKEN && API_TOKEN !== "") {
         if (authHeader !== API_TOKEN) {
@@ -15,8 +24,6 @@ async function handler(req: Request): Promise<Response> {
             return new Response(JSON.stringify({ error }), { status: 401, headers: { "Content-Type": "application/json" } });
         }
     }
-
-    const { pathname } = new URL(req.url);
 
     let handle: (req: Request) => Promise<Response>;
 
@@ -29,14 +36,10 @@ async function handler(req: Request): Promise<Response> {
     }
 
     const composedHandler = withPlayerUrlValidation(handle);
-
-    try {
-        return await composedHandler(req);
-    } catch (error) {
-        console.error(error);
-        return new Response(JSON.stringify({ error: 'Internal Server Error', message: error.message }), { status: 500, headers: { "Content-Type": "application/json" } });
-    }
+    return await composedHandler(req);
 }
+
+const handler = withMetrics(baseHandler);
 
 const port = Deno.env.get("PORT") || 8001;
 const host = Deno.env.get("HOST") || '0.0.0.0';

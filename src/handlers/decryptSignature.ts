@@ -7,6 +7,7 @@ import type { SignatureRequest, SignatureResponse } from "../types.ts";
 export async function handleDecryptSignature(req: Request): Promise<Response> {
     const { encrypted_signature, n_param, player_url }: SignatureRequest = await req.json();
 
+
     const playerCacheKey = await getPlayerFilePath(player_url);
     const cachedPreprocessedPlayer = preprocessedCache.get(playerCacheKey);
 
