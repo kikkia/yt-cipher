@@ -20,6 +20,8 @@ git clone https://github.com/kikkia/yt-cipher.git
 
 cd yt-cipher
 
+git clone https://github.com/yt-dlp/ejs.git
+
 docker-compose build
 docker-compose up
 ```
