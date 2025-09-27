@@ -34,6 +34,8 @@ Clone the repository and patch the `ejs` dependency:
 git clone https://github.com/kikkia/yt-cipher.git
 cd yt-cipher
 git clone https://github.com/yt-dlp/ejs.git
+cd ejs
+git reset -hard 1adbcc85e32f75e43a81cad2cd2d861154f13baa # this is temporary, ejs moved files around so this reset puts it back to the last commit before that, and I'll fix this soon. I'm on my phone only till oct.1
 deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 ```
 
