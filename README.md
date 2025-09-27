@@ -24,6 +24,22 @@ docker-compose build
 docker-compose up
 ```
 
+### Deno
+
+If you have Deno installed, you can run the service directly.
+
+Clone the repository and patch the `ejs` dependency:
+
+```bash
+git clone https://github.com/kikkia/yt-cipher.git
+cd yt-cipher
+deno run --allow-read --allow-write ./scripts/patch-ejs.ts
+```
+
+```bash
+deno run --allow-net --allow-read --allow-write --allow-env --v8-flags=--max-old-space-size=1024 server.ts
+```
+
 ## Authentication
 
 You can optionally set the `API_TOKEN` environment variable in your `docker-compose.yml` file to require a password to access the service.
