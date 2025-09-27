@@ -16,7 +16,7 @@ export async function handleDecryptSignature(req: Request): Promise<Response> {
             preprocessed_player: cachedPreprocessedPlayer,
             requests: [
                 { type: "sig", challenges: encrypted_signature ? [encrypted_signature] : [] },
-                { type: "nsig", challenges: n_param ? [n_param] : [] },
+                { type: "n", challenges: n_param ? [n_param] : [] },
             ],
         }
         : {
@@ -25,7 +25,7 @@ export async function handleDecryptSignature(req: Request): Promise<Response> {
             output_preprocessed: true,
             requests: [
                 { type: "sig", challenges: encrypted_signature ? [encrypted_signature] : [] },
-                { type: "nsig", challenges: n_param ? [n_param] : [] },
+                { type: "n", challenges: n_param ? [n_param] : [] },
             ],
         };
 
