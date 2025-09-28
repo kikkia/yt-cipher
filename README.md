@@ -1,19 +1,20 @@
-Basic service to eval yt player scripts for nsig stuff. 
+Basic service to evaluate YouTube player scripts to extract/decrypt `n`-signature (nsig) information.
 
 # Getting Started
 
 ## Public instance
-**It is very much reccomended to host yourself**
 
-You can use the public instance without a password at `https://cipher.kikkia.dev/api`. 
+**Self‑hosting is strongly recommended.**
 
-WARNING: Ratelimit of 5/sec, also do not expect perfect uptime. To have better performance and garunteed uptime, host it yourself. 
+You can use the public instance without a password at `https://cipher.kikkia.dev/api`.
+
+> **Warning:** the public instance is rate-limited to **5 requests/sec** and uptime is not guaranteed. For better performance and reliable availability, host the service yourself.
 
 ## Hosting yourself
 
-### Docker/Docker-compose
+### Docker / Docker Compose
 
-The easiest way to use this right now is with docker
+The easiest way to run this right now is with Docker:
 
 ```bash
 git clone https://github.com/kikkia/yt-cipher.git
@@ -26,50 +27,55 @@ docker-compose up
 
 ### Deno
 
-If you have Deno installed, you can run the service directly.
-
-Clone the repository and patch the `ejs` dependency:
+If you have Deno installed, you can run the service directly. Clone the repository and patch the `ejs` dependency:
 
 ```bash
 git clone https://github.com/kikkia/yt-cipher.git
 cd yt-cipher
 git clone https://github.com/yt-dlp/ejs.git
 cd ejs
-git reset -hard 1adbcc85e32f75e43a81cad2cd2d861154f13baa # this is temporary, ejs moved files around so this reset puts it back to the last commit before that, and I'll fix this soon. I'm on my phone only till oct.1
+# Temporary: reset to commit 1adbcc85e32f75e43a81cad2cd2d861154f13baa
+git reset --hard 1adbcc85e32f75e43a81cad2cd2d861154f13baa
 deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 ```
+
+Then start the server:
 
 ```bash
 deno run --allow-net --allow-read --allow-write --allow-env --v8-flags=--max-old-space-size=1024 server.ts
 ```
 
-## Authentication
+> Note: the `ejs` reset above is a temporary workaround for upstream file changes; it will be addressed in a future update.
 
-You can optionally set the `API_TOKEN` environment variable in your `docker-compose.yml` file to require a password to access the service.
+# Authentication
 
-Requests without a valid `Authorization: <your_token>` header will be rejected if you have a token set.
+Set the `API_TOKEN` environment variable in your `docker-compose.yml` file to require a password to access the service.
 
-## Config
+If a token is set, requests without a valid `Authorization: <your_token>` header will be rejected.
 
-Environment Variables:
-- `MAX_THREADS` - max # of workers that can handle requests. Default is 1 per thread on the machine or 1 if it can't determine that for some reason. 
-- `API_TOKEN` - The required token to authenticate requests
-- `PORT` - Port to run the api on, default: `8001`
-- `HOST` - Sets the hostname for the deno server, default: `0.0.0.0`
+# Config
 
-## IPv6 Support
+**Environment variables:**
 
-To run the server with IPv6, you need to configure the `HOST` environment variable.
+* `MAX_THREADS` — Maximum number of worker threads. Defaults to the number of CPU threads on the machine, or `1` if that cannot be determined.
+* `API_TOKEN` — The token required to authenticate requests.
+* `HOST` — Hostname for the Deno server. Default: `0.0.0.0`.
+* `PORT` — Port to run the API on. Default: `8001`.
+* 
+# IPv6 Support
 
-- Set `HOST` to `[::]` to bind to all available IPv6 and IPv4 addresses on most modern operating systems.
+To run the server with IPv6, set the `HOST` environment variable appropriately.
 
-When accessing the service over IPv6, make sure to use the correct address format. For example, to access the service running on localhost, you would use `http://[::1]:8001/`.
+* Set `HOST` to `[::]` to bind to all available IPv6 and IPv4 addresses on most modern operating systems.
 
-## API Specification
+When accessing the service over IPv6, make sure to use the correct address format. 
+For example, to access the service running on localhost use the IPv6 loopback address: `http://[::1]:8001/` or the if the port has been configured `http://[::1]:<PORT>/`.
 
-### `POST /decrypt_signature`
+# API Specification
 
-**Request Body:**
+## `POST /decrypt_signature`
+
+**Request body:**
 
 ```json
 {
@@ -79,11 +85,11 @@ When accessing the service over IPv6, make sure to use the correct address forma
 }
 ```
 
-- `encrypted_signature` (string): The encrypted signature from the video stream.
-- `n_param` (string): The `n` parameter value.
-- `player_url` (string): The URL to the JavaScript player file that contains the decryption logic.
+* `encrypted_signature` (string): The encrypted signature from the video stream.
+* `n_param` (string): The `n` parameter value.
+* `player_url` (string): URL of the JavaScript player file that contains the decryption logic.
 
-**Successful Response:**
+**Successful response:**
 
 ```json
 {
@@ -96,20 +102,20 @@ When accessing the service over IPv6, make sure to use the correct address forma
 
 ```bash
 curl -X POST http://localhost:8001/decrypt_signature \
--H "Content-Type: application/json" \
--H "Authorization: your_secret_token" \
--d '{
-  "encrypted_signature": "...",
-  "n_param": "...",
-  "player_url": "https://..."
-}'
+  -H "Content-Type: application/json" \
+  -H "Authorization: your_secret_token" \
+  -d '{
+    "encrypted_signature": "...",
+    "n_param": "...",
+    "player_url": "https://..."
+  }'
 ```
 
-### `POST /get_sts`
+## `POST /get_sts`
 
 Extracts the signature timestamp (`sts`) from a player script.
 
-**Request Body:**
+**Request body:**
 
 ```json
 {
@@ -117,9 +123,9 @@ Extracts the signature timestamp (`sts`) from a player script.
 }
 ```
 
-- `player_url` (string): The URL to the JavaScript player file.
+* `player_url` (string): URL of the JavaScript player file.
 
-**Successful Response:**
+**Successful response:**
 
 ```json
 {
@@ -131,9 +137,9 @@ Extracts the signature timestamp (`sts`) from a player script.
 
 ```bash
 curl -X POST http://localhost:8001/get_sts \
--H "Content-Type: application/json" \
--H "Authorization: your_secret_token" \
--d '{
-  "player_url": "https://..."
-}'
+  -H "Content-Type: application/json" \
+  -H "Authorization: your_secret_token" \
+  -d '{
+    "player_url": "https://..."
+  }'
 ```
