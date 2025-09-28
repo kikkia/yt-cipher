@@ -1,4 +1,4 @@
-import type { Input as MainInput } from "../../ejs/src/main.ts";
+import type { Input as MainInput } from "../../ejs/src/yt/solver/main.ts";
 import { execInPool } from "../workerPool.ts";
 import { getPlayerFilePath } from "../playerCache.ts";
 import { preprocessedCache } from "../preprocessedCache.ts";
