@@ -1,4 +1,4 @@
-An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs). It can be used to handle youtube player signature ciphers en-masse. 
+An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs).
 
 # Getting Started
 
@@ -7,13 +7,13 @@ An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs). It can be u
 
 You can use the public instance without a password at `https://cipher.kikkia.dev/api`. 
 
-WARNING: Ratelimit of 5/sec, also do not expect perfect uptime. To have better performance and garunteed uptime, host it yourself. 
+WARNING: Ratelimit of 5/sec. To have better performance and garunteed uptime, host it yourself. 
 
 ## Hosting yourself
 
 ### Docker/Docker-compose
 
-The easiest way to use this right now is with docker
+The easiest way to host this service is with Docker
 
 ```bash
 git clone https://github.com/kikkia/yt-cipher.git
