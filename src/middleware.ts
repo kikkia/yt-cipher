@@ -7,13 +7,22 @@ export function withMetrics(handler: Next): Next {
     return async (req: Request) => {
         const { pathname } = new URL(req.url);
 
-        // Don't record metrics for the metrics endpoint itself
-        if (pathname === '/metrics' || pathname === '/health') {
-            return await handler(req);
+        if (req.method !== "POST") {
+            return await handler(req)
         }
-
-        const playerUrl = new URL(req.url).searchParams.get('playerUrl') || 'unknown';
-        const playerId = extractPlayerId(playerUrl);
+    
+        let playerId = 'unknown'
+        const cloneReq = req.clone();
+        try {
+            const body = await cloneReq.json();
+            console.log(body.player_url)
+            playerId = extractPlayerId(body.player_url);
+        } catch (error) {
+            // We dont really care right now, anything actually wrong fails down the line
+            // This is just metrics parsing
+            playerId = "error"
+        }
+        console.log(playerId)
 
         endpointHits.labels({ method: req.method, pathname, player_id: playerId }).inc();
         const start = performance.now();
