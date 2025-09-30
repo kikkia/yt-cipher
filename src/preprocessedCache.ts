@@ -7,21 +7,21 @@ class InstrumentedMap<K, V> extends Map<K, V> {
 
     set(key: K, value: V): this {
         super.set(key, value);
-        cacheSize.set({ cache_name: this.cacheName }, this.size);
+        cacheSize.labels({ cache_name: this.cacheName }).set(this.size);
         return this;
     }
 
     delete(key: K): boolean {
         const deleted = super.delete(key);
         if (deleted) {
-            cacheSize.set({ cache_name: this.cacheName }, this.size);
+            cacheSize.labels({ cache_name: this.cacheName }).set(this.size);
         }
         return deleted;
     }
 
     clear(): void {
         super.clear();
-        cacheSize.set({ cache_name: this.cacheName }, 0);
+        cacheSize.labels({ cache_name: this.cacheName }).set(0);
     }
 }
 

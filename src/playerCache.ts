@@ -26,7 +26,7 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
             const playerContent = await response.text();
             await Deno.writeTextFile(filePath, playerContent);
             const files = await Deno.readDir(CACHE_DIR);
-            cacheSize.set({ cache_name: 'player' }, Array.from(files).length);
+            cacheSize.labels({ cache_name: 'player' }).set(Array.from(files).length);
             console.log(`Saved player to cache: ${filePath}`);
             return filePath;
         }
@@ -37,6 +37,6 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
 export async function initializeCache() {
     await ensureDir(CACHE_DIR);
     const files = await Deno.readDir(CACHE_DIR);
-    cacheSize.set({ cache_name: 'player' }, Array.from(files).length);
+    cacheSize.labels({ cache_name: 'player' }).set(Array.from(files).length);
     console.log(`Player cache directory ensured at: ${CACHE_DIR}`);
 }
