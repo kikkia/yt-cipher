@@ -14,7 +14,9 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
     const filePath = join(CACHE_DIR, `${hash}.js`);
 
     try {
-        await Deno.stat(filePath);
+        const stat = await Deno.stat(filePath);
+        // updated time on file mark it as recently used.
+        await Deno.utime(filePath, new Date(), stat.mtime ?? new Date());
         return filePath;
     } catch (error) {
         if (error instanceof Deno.errors.NotFound) {
@@ -25,8 +27,14 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
             }
             const playerContent = await response.text();
             await Deno.writeTextFile(filePath, playerContent);
-            const files = await Deno.readDir(CACHE_DIR);
-            cacheSize.labels({ cache_name: 'player' }).set(Array.from(files).length);
+
+            // Update cache size for metrics
+            let fileCount = 0;
+            for await (const _ of Deno.readDir(CACHE_DIR)) {
+                fileCount++;
+            }
+            cacheSize.labels({ cache_name: 'player' }).set(fileCount);
+            
             console.log(`Saved player to cache: ${filePath}`);
             return filePath;
         }
@@ -36,7 +44,24 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
 
 export async function initializeCache() {
     await ensureDir(CACHE_DIR);
-    const files = await Deno.readDir(CACHE_DIR);
-    cacheSize.labels({ cache_name: 'player' }).set(Array.from(files).length);
+
+    // Since these accumulate over time just cleanout 14 day unused ones
+    let fileCount = 0;
+    const thirtyDays = 14 * 24 * 60 * 60 * 1000;
+    console.log(`Cleaning up player cache directory: ${CACHE_DIR}`);
+    for await (const dirEntry of Deno.readDir(CACHE_DIR)) {
+        if (dirEntry.isFile) {
+            const filePath = join(CACHE_DIR, dirEntry.name);
+            const stat = await Deno.stat(filePath);
+            const lastAccessed = stat.atime?.getTime() ?? stat.mtime?.getTime() ?? stat.birthtime?.getTime();
+            if (lastAccessed && (Date.now() - lastAccessed > thirtyDays)) {
+                console.log(`Deleting stale player cache file: ${filePath}`);
+                await Deno.remove(filePath);
+            } else {
+                fileCount++;
+            }
+        }
+    }
+    cacheSize.labels({ cache_name: 'player' }).set(fileCount);
     console.log(`Player cache directory ensured at: ${CACHE_DIR}`);
 }

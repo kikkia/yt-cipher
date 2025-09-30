@@ -28,4 +28,4 @@ EXPOSE 8001
 
 USER deno
 
-CMD ["run", "--allow-net", "--allow-read", "--allow-write", "--allow-env", "--v8-flags=--max-old-space-size=1024", "server.ts"]
+CMD ["run", "--allow-net", "--allow-read", "--allow-write", "--allow-env", "server.ts"]

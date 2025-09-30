@@ -41,7 +41,7 @@ deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 ```
 
 ```bash
-deno run --allow-net --allow-read --allow-write --allow-env --v8-flags=--max-old-space-size=1024 server.ts
+deno run --allow-net --allow-read --allow-write --allow-env server.ts
 ```
 
 ## Authentication
@@ -57,6 +57,7 @@ Environment Variables:
 - `API_TOKEN` - The required token to authenticate requests
 - `PORT` - Port to run the api on, default: `8001`
 - `HOST` - Sets the hostname for the deno server, default: `0.0.0.0`
+- `PREPROCESSED_CACHE_SIZE` - Max size of processed player script cache. Lower to consume less memory. default: `150`
 
 ## IPv6 Support
 
