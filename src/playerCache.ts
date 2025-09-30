@@ -1,6 +1,7 @@
 import { crypto } from "https://deno.land/std@0.224.0/crypto/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { cacheSize } from "./metrics.ts";
 
 export const CACHE_DIR = join(Deno.cwd(), 'player_cache');
 
@@ -24,6 +25,8 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
             }
             const playerContent = await response.text();
             await Deno.writeTextFile(filePath, playerContent);
+            const files = await Deno.readDir(CACHE_DIR);
+            cacheSize.set({ cache_name: 'player' }, Array.from(files).length);
             console.log(`Saved player to cache: ${filePath}`);
             return filePath;
         }
@@ -33,5 +36,7 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
 
 export async function initializeCache() {
     await ensureDir(CACHE_DIR);
+    const files = await Deno.readDir(CACHE_DIR);
+    cacheSize.set({ cache_name: 'player' }, Array.from(files).length);
     console.log(`Player cache directory ensured at: ${CACHE_DIR}`);
 }
