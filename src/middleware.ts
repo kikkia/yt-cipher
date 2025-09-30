@@ -8,7 +8,7 @@ export function withMetrics(handler: Next): Next {
         const { pathname } = new URL(req.url);
 
         // Don't record metrics for the metrics endpoint itself
-        if (pathname === '/metrics') {
+        if (pathname === '/metrics' || pathname === '/health') {
             return await handler(req);
         }
 
