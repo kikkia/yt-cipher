@@ -1,4 +1,4 @@
-Basic service to eval yt player scripts for nsig stuff. 
+An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs). It can be used to handle youtube player signature ciphers en-masse. 
 
 # Getting Started
 
@@ -54,7 +54,7 @@ Requests without a valid `Authorization: <your_token>` header will be rejected i
 
 Environment Variables:
 - `MAX_THREADS` - max # of workers that can handle requests. Default is 1 per thread on the machine or 1 if it can't determine that for some reason. 
-- `API_TOKEN` - The required token to authenticate requests
+- `API_TOKEN` - A required password to access this service
 - `PORT` - Port to run the api on, default: `8001`
 - `HOST` - Sets the hostname for the deno server, default: `0.0.0.0`
 - `PREPROCESSED_CACHE_SIZE` - Max size of processed player script cache. Lower to consume less memory. default: `150`
