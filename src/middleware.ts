@@ -15,14 +15,12 @@ export function withMetrics(handler: Next): Next {
         const cloneReq = req.clone();
         try {
             const body = await cloneReq.json();
-            console.log(body.player_url)
             playerId = extractPlayerId(body.player_url);
         } catch (error) {
             // We dont really care right now, anything actually wrong fails down the line
             // This is just metrics parsing
             playerId = "error"
         }
-        console.log(playerId)
 
         endpointHits.labels({ method: req.method, pathname, player_id: playerId }).inc();
         const start = performance.now();
