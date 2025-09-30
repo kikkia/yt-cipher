@@ -1,5 +1,5 @@
-import main from "./ejs/src/main.ts";
-import type { Input as MainInput, Output as MainOutput } from "./ejs/src/main.ts";
+import main from "./ejs/src/yt/solver/main.ts";
+import type { Input as MainInput, Output as MainOutput } from "./ejs/src/yt/solver/main.ts";
 
 self.onmessage = (e: MessageEvent<MainInput>) => {
     try {

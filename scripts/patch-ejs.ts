@@ -1,5 +1,5 @@
-import { walk } from "https://deno.land/std@0.140.0/fs/walk.ts";
-import { join } from "https://deno.land/std@0.140.0/path/mod.ts";
+import { walk } from "https://deno.land/std@0.224.0/fs/walk.ts";
+import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const EJS_SRC_DIR = join(Deno.cwd(), "ejs/src");
 
@@ -8,8 +8,8 @@ async function patchFile(path: string) {
     let changed = false;
 
     const replacements = [
-        { from: /from "meriyah"/g, to: 'from "npm:meriyah"' },
-        { from: /from "astring"/g, to: 'from "npm:astring"' }
+        { from: /from ["']meriyah["']/g, to: 'from "npm:meriyah"' },
+        { from: /from ["']astring["']/g, to: 'from "npm:astring"' }
     ];
 
     for (const replacement of replacements) {
