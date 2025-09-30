@@ -26,7 +26,13 @@ async function baseHandler(req: Request): Promise<Response> {
     }
 
     let handle: (req: Request) => Promise<Response>;
-
+    
+    if (pathname === "/") {
+        return new Response("YouTube Cipher by kikkia", {
+            headers: { "Content-Type": "text/plain" },
+        });
+    }
+    
     if (pathname === '/decrypt_signature') {
         handle = handleDecryptSignature;
     } else if (pathname === '/get_sts') {
