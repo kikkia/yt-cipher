@@ -67,6 +67,21 @@ To run the server with IPv6, you need to configure the `HOST` environment variab
 
 When accessing the service over IPv6, make sure to use the correct address format. For example, to access the service running on localhost, you would use `http://[::1]:8001/`.
 
+## Lavalink Config
+
+If you are using this with the [youtube-source](https://github.com/lavalink-devs/youtube-source) plugin, please reference the [setup steps](https://github.com/lavalink-devs/youtube-source?tab=readme-ov-file#using-a-remote-cipher-server).
+
+### Timeout issues
+If you ever have issues with read timeout errors, you can try upping the http timeouts in your lavalink config
+```yaml
+lavalink:
+  server:
+    timeouts:
+      connectTimeoutMs: 10000
+      connectionRequestTimeoutMs: 10000
+      socketTimeoutMs: 10000
+```
+
 ## API Specification
 
 ### `POST /decrypt_signature`
