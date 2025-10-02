@@ -33,7 +33,7 @@ function dispatch() {
     idleWorker.postMessage(task.data);
 }
 
-export function execInPool(data: MainInput): Promise<MainOutput> {
+export function execInPool(data: string): Promise<string> {
     return new Promise((resolve, reject) => {
         taskQueue.push({ data, resolve, reject });
         dispatch();

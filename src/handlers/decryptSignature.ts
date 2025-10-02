@@ -1,58 +1,37 @@
-import type { Input as MainInput } from "../../ejs/src/yt/solver/main.ts";
 import { execInPool } from "../workerPool.ts";
 import { getPlayerFilePath } from "../playerCache.ts";
 import { preprocessedCache } from "../preprocessedCache.ts";
-import type { RequestContext, SignatureRequest, SignatureResponse } from "../types.ts";
+import { solverCache } from "../solverCache.ts";
+import { getFromPrepared } from "../../ejs/src/yt/solver/solvers.ts";
+import type { RequestContext, SignatureRequest, SignatureResponse, Solvers } from "../types.ts";
 
 export async function handleDecryptSignature(ctx: RequestContext): Promise<Response> {
     const { encrypted_signature, n_param, player_url } = ctx.body as SignatureRequest;
 
-
     const playerCacheKey = await getPlayerFilePath(player_url);
-    const cachedPreprocessedPlayer = preprocessedCache.get(playerCacheKey);
 
-    const mainInput: MainInput = cachedPreprocessedPlayer
-        ? {
-            type: "preprocessed",
-            preprocessed_player: cachedPreprocessedPlayer,
-            requests: [
-                { type: "sig", challenges: encrypted_signature ? [encrypted_signature] : [] },
-                { type: "n", challenges: n_param ? [n_param] : [] },
-            ],
+    let solvers = solverCache.get(playerCacheKey);
+
+    if (!solvers) {
+        let preprocessedPlayer = preprocessedCache.get(playerCacheKey);
+        if (!preprocessedPlayer) {
+            const rawPlayer = await Deno.readTextFile(playerCacheKey);
+            preprocessedPlayer = await execInPool(rawPlayer);
+            preprocessedCache.set(playerCacheKey, preprocessedPlayer);
         }
-        : {
-            type: "player",
-            player: await Deno.readTextFile(playerCacheKey),
-            output_preprocessed: true,
-            requests: [
-                { type: "sig", challenges: encrypted_signature ? [encrypted_signature] : [] },
-                { type: "n", challenges: n_param ? [n_param] : [] },
-            ],
-        };
-
-    const output = await execInPool(mainInput);
-
-    if (output.type === 'error') {
-        throw new Error(output.error);
-    }
-
-    if (output.preprocessed_player) {
-        preprocessedCache.set(playerCacheKey, output.preprocessed_player);
-        console.log(`Cached preprocessed player for: ${player_url}`);
+        
+        solvers = getFromPrepared(preprocessedPlayer);
+        solverCache.set(playerCacheKey, solvers);
     }
 
     let decrypted_signature = '';
-    let decrypted_n_sig = '';
+    if (encrypted_signature && solvers.sig) {
+        decrypted_signature = solvers.sig(encrypted_signature);
+    }
 
-    for (const r of output.responses) {
-        if (r.type === 'result') {
-            if (encrypted_signature && encrypted_signature in r.data) {
-                decrypted_signature = r.data[encrypted_signature];
-            }
-            if (n_param && n_param in r.data) {
-                decrypted_n_sig = r.data[n_param];
-            }
-        }
+    let decrypted_n_sig = '';
+    if (n_param && solvers.n) {
+        decrypted_n_sig = solvers.n(n_param);
     }
 
     const response: SignatureResponse = {

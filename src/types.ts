@@ -1,5 +1,10 @@
 import type { Input as MainInput, Output as MainOutput } from "../ejs/src/yt/solver/main.ts";
 
+export interface Solvers {
+    n: ((val: string) => string) | null;
+    sig: ((val: string) => string) | null;
+}
+
 export interface SignatureRequest {
     encrypted_signature: string;
     n_param: string;
@@ -24,8 +29,8 @@ export interface WorkerWithStatus extends Worker {
 }
 
 export interface Task {
-    data: MainInput;
-    resolve: (output: MainOutput) => void;
+    data: string;
+    resolve: (output: string) => void;
     reject: (error: any) => void;
 }
 
