@@ -1,84 +1,44 @@
 import { extractPlayerId, validateAndNormalizePlayerUrl } from "./utils.ts";
 import { playerUrlRequests, endpointHits, responseCodes, endpointLatency } from "./metrics.ts";
+import type { RequestContext } from "./types.ts";
 
-type Next = (req: Request) => Promise<Response>;
+type Next = (ctx: RequestContext) => Promise<Response>;
 
 export function withMetrics(handler: Next): Next {
-    return async (req: Request) => {
-        const { pathname } = new URL(req.url);
+    return async (ctx: RequestContext) => {
+        const { pathname } = new URL(ctx.req.url);
+        const playerId = extractPlayerId(ctx.body.player_url);
 
-        if (req.method !== "POST") {
-            return await handler(req)
-        }
-    
-        let playerId = 'unknown'
-        const cloneReq = req.clone();
-        try {
-            const body = await cloneReq.json();
-            playerId = extractPlayerId(body.player_url);
-        } catch (error) {
-            // We dont really care right now, anything actually wrong fails down the line
-            // This is just metrics parsing
-            playerId = "error"
-        }
-
-        endpointHits.labels({ method: req.method, pathname, player_id: playerId }).inc();
+        endpointHits.labels({ method: ctx.req.method, pathname, player_id: playerId }).inc();
         const start = performance.now();
 
-        let response: Response;
-        try {
-            response = await handler(req);
-        } catch (error) {
-            // In case of an unhandled exception, default to a 500 error
-            console.error("Unhandled error in handler:", error);
-            response = new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
-        } finally {
-            const duration = (performance.now() - start) / 1000;
-            const cached = response!.headers.get("X-Cache-Hit") === "true" ? "true" : "false";
-            endpointLatency.labels({ method: req.method, pathname, player_id: playerId, cached }).observe(duration);
-            responseCodes.labels({ method: req.method, pathname, status: String(response!.status), player_id: playerId }).inc();
-        }
+        const response = await handler(ctx);
+
+        const duration = (performance.now() - start) / 1000;
+        const cached = response.headers.get("X-Cache-Hit") === "true" ? "true" : "false";
+        endpointLatency.labels({ method: ctx.req.method, pathname, player_id: playerId, cached }).observe(duration);
+        responseCodes.labels({ method: ctx.req.method, pathname, status: String(response.status), player_id: playerId }).inc();
 
         return response;
     };
 }
 
 export function withPlayerUrlValidation(handler: Next): Next {
-    return async (req: Request) => {
-        // Only need this check on POST requests
-        if (req.method !== 'POST') {
-            return await handler(req);
-        }
-
-        const originalReq = req.clone();
-        try {
-            const body = await req.json();
-            if (!body.player_url) {
-                return new Response(JSON.stringify({ error: "player_url is required" }), { status: 400, headers: { "Content-Type": "application/json" } });
-            }
-
-            const normalizedUrl = validateAndNormalizePlayerUrl(body.player_url);
-            const playerId = extractPlayerId(normalizedUrl);
-            playerUrlRequests.labels({ player_id: playerId }).inc();
-            
-            // Reconstruct the request with the normalized URL
-            const newBody = { ...body, player_url: normalizedUrl };
-            const newReq = new Request(req.url, {
-                method: req.method,
-                headers: req.headers,
-                body: JSON.stringify(newBody)
+    return async (ctx: RequestContext) => {
+        if (!ctx.body.player_url) {
+            return new Response(JSON.stringify({ error: "player_url is required" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
             });
-
-            return await handler(newReq);
-        } catch (error) {
-            if (error instanceof SyntaxError) {
-                 return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400, headers: { "Content-Type": "application/json" } });
-            }
-            // Pass the original request if we cant get a body, the handler will error
-            if (error.message.includes('could not be cloned')) {
-                 return await handler(originalReq);
-            }
-            return new Response(JSON.stringify({ error: error.message }), { status: 400, headers: { "Content-Type": "application/json" } });
         }
+
+        const normalizedUrl = validateAndNormalizePlayerUrl(ctx.body.player_url);
+        const playerId = extractPlayerId(normalizedUrl);
+        playerUrlRequests.labels({ player_id: playerId }).inc();
+
+        // Mutate the context with the normalized URL
+        ctx.body.player_url = normalizedUrl;
+
+        return await handler(ctx);
     };
 }

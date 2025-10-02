@@ -28,3 +28,12 @@ export interface Task {
     resolve: (output: MainOutput) => void;
     reject: (error: any) => void;
 }
+
+export type ApiRequest = SignatureRequest | StsRequest;
+
+// Parsing into this context helps avoid multi copies of requests
+// since request body can only be read once. 
+export interface RequestContext {
+    req: Request;
+    body: ApiRequest;
+}

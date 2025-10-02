@@ -1,9 +1,9 @@
 import { getPlayerFilePath } from "../playerCache.ts";
-import type { StsRequest, StsResponse } from "../types.ts";
+import type { RequestContext, StsRequest, StsResponse } from "../types.ts";
 import { stsCache } from "../stsCache.ts";
 
-export async function handleGetSts(req: Request): Promise<Response> {
-    const { player_url }: StsRequest = await req.json();
+export async function handleGetSts(ctx: RequestContext): Promise<Response> {
+    const { player_url } = ctx.body as StsRequest;
     const playerFilePath = await getPlayerFilePath(player_url);
 
     const cachedSts = stsCache.get(playerFilePath);

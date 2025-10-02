@@ -5,6 +5,7 @@ import { handleDecryptSignature } from "./src/handlers/decryptSignature.ts";
 import { handleGetSts } from "./src/handlers/getSts.ts";
 import { withPlayerUrlValidation, withMetrics } from "./src/middleware.ts";
 import { registry } from "./src/metrics.ts";
+import type { ApiRequest, RequestContext } from "./src/types.ts";
 
 const API_TOKEN = Deno.env.get("API_TOKEN");
 
@@ -25,7 +26,7 @@ async function baseHandler(req: Request): Promise<Response> {
         }
     }
 
-    let handle: (req: Request) => Promise<Response>;
+    let handle: (ctx: RequestContext) => Promise<Response>;
 
     if (pathname === '/decrypt_signature') {
         handle = handleDecryptSignature;
@@ -35,11 +36,14 @@ async function baseHandler(req: Request): Promise<Response> {
         return new Response(JSON.stringify({ error: 'Not Found' }), { status: 404, headers: { "Content-Type": "application/json" } });
     }
 
-    const composedHandler = withPlayerUrlValidation(handle);
-    return await composedHandler(req);
+    const body = await req.json() as ApiRequest;
+    const ctx: RequestContext = { req, body };
+
+    const composedHandler = withMetrics(withPlayerUrlValidation(handle));
+    return await composedHandler(ctx);
 }
 
-const handler = withMetrics(baseHandler);
+const handler = baseHandler;
 
 const port = Deno.env.get("PORT") || 8001;
 const host = Deno.env.get("HOST") || '0.0.0.0';
