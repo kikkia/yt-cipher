@@ -1,19 +1,19 @@
-Basic service to eval yt player scripts for nsig stuff. 
+An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs).
 
 # Getting Started
 
 ## Public instance
-**It is very much reccomended to host yourself**
 
 You can use the public instance without a password at `https://cipher.kikkia.dev/api`. 
+I do my best to keep it up and running and decently fast, but I don't garuntee uptime. I do reccomend you host yourself, but this is a good easy way to test it out and if you don't have a huge bot it is likely good enough for you. 
 
-WARNING: Ratelimit of 5/sec, also do not expect perfect uptime. To have better performance and garunteed uptime, host it yourself. 
+WARNING: Ratelimit of 5 requests/sec. To have better performance and garunteed uptime, host it yourself. 
 
 ## Hosting yourself
 
 ### Docker/Docker-compose
 
-The easiest way to use this right now is with docker
+The easiest way to host this service is with Docker
 
 ```bash
 git clone https://github.com/kikkia/yt-cipher.git
@@ -54,7 +54,7 @@ Requests without a valid `Authorization: <your_token>` header will be rejected i
 
 Environment Variables:
 - `MAX_THREADS` - max # of workers that can handle requests. Default is 1 per thread on the machine or 1 if it can't determine that for some reason. 
-- `API_TOKEN` - The required token to authenticate requests
+- `API_TOKEN` - A required password to access this service
 - `PORT` - Port to run the api on, default: `8001`
 - `HOST` - Sets the hostname for the deno server, default: `0.0.0.0`
 - `PREPROCESSED_CACHE_SIZE` - Max size of processed player script cache. Lower to consume less memory. default: `150`
@@ -66,6 +66,21 @@ To run the server with IPv6, you need to configure the `HOST` environment variab
 - Set `HOST` to `[::]` to bind to all available IPv6 and IPv4 addresses on most modern operating systems.
 
 When accessing the service over IPv6, make sure to use the correct address format. For example, to access the service running on localhost, you would use `http://[::1]:8001/`.
+
+## Lavalink Config
+
+If you are using this with the [youtube-source](https://github.com/lavalink-devs/youtube-source) plugin, please reference the [setup steps](https://github.com/lavalink-devs/youtube-source?tab=readme-ov-file#using-a-remote-cipher-server).
+
+### Timeout issues
+If you ever have issues with read timeout errors, you can try upping the http timeouts in your lavalink config
+```yaml
+lavalink:
+  server:
+    timeouts:
+      connectTimeoutMs: 10000
+      connectionRequestTimeoutMs: 10000
+      socketTimeoutMs: 10000
+```
 
 ## API Specification
 
