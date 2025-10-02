@@ -5,10 +5,10 @@ RUN apt-get update && apt-get install -y git npm
 WORKDIR /usr/src/app
 
 # Clone ejs repository, then patch it to be deno compatible
-RUN git clone https://github.com/yt-dlp/ejs.git
+RUN git clone https://github.com/kikkia/ejs.git
 
 # Pin to a specific commit to avoid breakages
-RUN cd ejs && git checkout 689764f8cea694e99609a41f1630d2e7e8e8668a && cd ..
+# RUN cd ejs && git checkout 689764f8cea694e99609a41f1630d2e7e8e8668a && cd ..
 
 COPY scripts/patch-ejs.ts ./scripts/patch-ejs.ts
 RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
