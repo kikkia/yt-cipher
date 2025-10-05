@@ -5,9 +5,9 @@ An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs).
 ## Public instance
 
 You can use the public instance without a password at `https://cipher.kikkia.dev/api`. 
-I do my best to keep it up and running and decently fast, but I don't garuntee uptime. I do reccomend you host yourself, but this is a good easy way to test it out and if you don't have a huge bot it is likely good enough for you. 
+I do my best to keep it up and running and decently fast, but I don't garuntee 100% uptime. Feel free to host it yourself or use the public API.
 
-WARNING: Ratelimit of 5 requests/sec. To have better performance and garunteed uptime, host it yourself. 
+WARNING: Ratelimit of 10 requests/sec (should be fine up to 1000+ active players). If you have more than 1k players you probably want to host it yourself.
 
 ## Hosting yourself
 
