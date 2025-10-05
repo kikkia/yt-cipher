@@ -13,14 +13,14 @@ const httpBuckets = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10];
 export const endpointHits = Counter.with({
     name: "http_requests_total",
     help: "Total number of HTTP requests.",
-    labels: ["method", "pathname", "player_id"],
+    labels: ["method", "pathname", "player_id", "plugin_version", "user_agent"],
     registry: [registry],
 });
 
 export const responseCodes = Counter.with({
     name: "http_responses_total",
     help: "Total number of HTTP responses.",
-    labels: ["method", "pathname", "status", "player_id"],
+    labels: ["method", "pathname", "status", "player_id", "plugin_version", "user_agent"],
     registry: [registry],
 });
 
