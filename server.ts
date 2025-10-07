@@ -3,6 +3,7 @@ import { initializeWorkers } from "./src/workerPool.ts";
 import { initializeCache } from "./src/playerCache.ts";
 import { handleDecryptSignature } from "./src/handlers/decryptSignature.ts";
 import { handleGetSts } from "./src/handlers/getSts.ts";
+import { handleResolveUrl } from "./src/handlers/resolveUrl.ts";
 import { withPlayerUrlValidation, withMetrics } from "./src/middleware.ts";
 import { registry } from "./src/metrics.ts";
 import type { ApiRequest, RequestContext } from "./src/types.ts";
@@ -39,6 +40,8 @@ async function baseHandler(req: Request): Promise<Response> {
         handle = handleDecryptSignature;
     } else if (pathname === '/get_sts') {
         handle = handleGetSts;
+    } else if (pathname === '/resolve_url') {
+        handle = handleResolveUrl;
     } else {
         return new Response(JSON.stringify({ error: 'Not Found' }), { status: 404, headers: { "Content-Type": "application/json" } });
     }

@@ -24,6 +24,18 @@ export interface StsResponse {
     sts: string;
 }
 
+export interface ResolveUrlRequest {
+    stream_url: string;
+    player_url: string;
+    encrypted_signature: string;
+    signature_key?: string;
+    n_param?: string;
+}
+
+export interface ResolveUrlResponse {
+    resolved_url: string;
+}
+
 export interface WorkerWithStatus extends Worker {
     isIdle?: boolean;
 }
@@ -34,7 +46,7 @@ export interface Task {
     reject: (error: any) => void;
 }
 
-export type ApiRequest = SignatureRequest | StsRequest;
+export type ApiRequest = SignatureRequest | StsRequest | ResolveUrlRequest;
 
 // Parsing into this context helps avoid multi copies of requests
 // since request body can only be read once. 
