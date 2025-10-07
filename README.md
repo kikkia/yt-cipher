@@ -154,3 +154,34 @@ curl -X POST http://localhost:8001/get_sts \
   "player_url": "https://..."
 }'
 ```
+
+
+### `POST /resolve_url`
+
+Resolves a raw stream URL by handling the signature and n-parameter decryption, returning a fully constructed and ready-to-use playback URL.
+
+**Request Body:**
+
+```json
+{
+  "stream_url": "...",
+  "player_url": "...",
+  "encrypted_signature": "...",
+  "signature_key": "...",
+  "n_param": "..."
+}
+```
+
+- `stream_url` (string): The initial stream URL (not video url).
+- `player_url` (string): The URL to the JavaScript player file.
+- `encrypted_signature` (string): The encrypted signature value.
+- `signature_key` (string, optional): The query parameter key to use for the decrypted signature in the final URL. Defaults to `sig`.
+- `n_param` (string, optional): The `n` parameter value. If not provided, it will be extracted from the `stream_url`.
+
+**Successful Response:**
+
+```json
+{
+  "resolved_url": "..."
+}
+```
