@@ -4,7 +4,8 @@ import { initializeCache } from "./src/playerCache.ts";
 import { handleDecryptSignature } from "./src/handlers/decryptSignature.ts";
 import { handleGetSts } from "./src/handlers/getSts.ts";
 import { handleResolveUrl } from "./src/handlers/resolveUrl.ts";
-import { withPlayerUrlValidation, withMetrics } from "./src/middleware.ts";
+import { withMetrics } from "./src/middleware.ts";
+import { withValidation } from "./src/validation.ts";
 import { registry } from "./src/metrics.ts";
 import type { ApiRequest, RequestContext } from "./src/types.ts";
 
@@ -46,10 +47,15 @@ async function baseHandler(req: Request): Promise<Response> {
         return new Response(JSON.stringify({ error: 'Not Found' }), { status: 404, headers: { "Content-Type": "application/json" } });
     }
 
-    const body = await req.json() as ApiRequest;
+    let body;
+    try {
+        body = await req.json() as ApiRequest;
+    } catch {
+        return new Response(JSON.stringify({ error: 'Invalid JSON body' }), { status: 400, headers: { "Content-Type": "application/json" } });
+    }
     const ctx: RequestContext = { req, body };
 
-    const composedHandler = withMetrics(withPlayerUrlValidation(handle));
+    const composedHandler = withValidation(withMetrics(handle));
     return await composedHandler(ctx);
 }
 

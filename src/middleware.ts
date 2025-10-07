@@ -1,5 +1,5 @@
-import { extractPlayerId, validateAndNormalizePlayerUrl } from "./utils.ts";
-import { playerUrlRequests, endpointHits, responseCodes, endpointLatency } from "./metrics.ts";
+import { extractPlayerId } from "./utils.ts";
+import { endpointHits, responseCodes, endpointLatency } from "./metrics.ts";
 import type { RequestContext } from "./types.ts";
 
 type Next = (ctx: RequestContext) => Promise<Response>;
@@ -22,25 +22,5 @@ export function withMetrics(handler: Next): Next {
         responseCodes.labels({ method: ctx.req.method, pathname, status: String(response.status), player_id: playerId, plugin_version: pluginVersion, user_agent: userAgent }).inc();
 
         return response;
-    };
-}
-
-export function withPlayerUrlValidation(handler: Next): Next {
-    return async (ctx: RequestContext) => {
-        if (!ctx.body.player_url) {
-            return new Response(JSON.stringify({ error: "player_url is required" }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" },
-            });
-        }
-
-        const normalizedUrl = validateAndNormalizePlayerUrl(ctx.body.player_url);
-        const playerId = extractPlayerId(normalizedUrl);
-        playerUrlRequests.labels({ player_id: playerId }).inc();
-
-        // Mutate the context with the normalized URL
-        ctx.body.player_url = normalizedUrl;
-
-        return await handler(ctx);
     };
 }
