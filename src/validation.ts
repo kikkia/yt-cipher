@@ -8,8 +8,6 @@ type ValidationSchema = {
 
 const signatureRequestSchema: ValidationSchema = {
     player_url: (val) => typeof val === 'string',
-    encrypted_signature: (val) => typeof val === 'string',
-    n_param: (val) => typeof val === 'string',
 };
 
 const stsRequestSchema: ValidationSchema = {
