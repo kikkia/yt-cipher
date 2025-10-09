@@ -43,6 +43,7 @@ deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 ```bash
 deno run --allow-net --allow-read --allow-write --allow-env server.ts
 ```
+NOTE: If using an `.env` file then also add the `--env` flag
 
 ## Authentication
 
