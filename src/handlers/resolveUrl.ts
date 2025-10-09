@@ -12,14 +12,15 @@ export async function handleResolveUrl(ctx: RequestContext): Promise<Response> {
 
     const url = new URL(stream_url);
 
-    if (!solvers.sig) {
-        return new Response(JSON.stringify({ error: "No signature solver found for this player" }), { status: 500, headers: { "Content-Type": "application/json" } });
+    if (encrypted_signature) {
+        if (!solvers.sig) {
+            return new Response(JSON.stringify({ error: "No signature solver found for this player" }), { status: 500, headers: { "Content-Type": "application/json" } });
+        }
+        const decryptedSig = solvers.sig(encrypted_signature);
+        const sigKey = signature_key || 'sig';
+        url.searchParams.set(sigKey, decryptedSig);
+        url.searchParams.delete("s");
     }
-
-    const decryptedSig = solvers.sig(encrypted_signature);
-    const sigKey = signature_key || 'sig';
-    url.searchParams.set(sigKey, decryptedSig);
-    url.searchParams.delete("s");
 
     let nParam = nParamFromRequest || null;
     if (!nParam) {

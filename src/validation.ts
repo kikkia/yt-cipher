@@ -17,7 +17,6 @@ const stsRequestSchema: ValidationSchema = {
 const resolveUrlRequestSchema: ValidationSchema = {
     player_url: (val) => typeof val === 'string',
     stream_url: (val) => typeof val === 'string',
-    encrypted_signature: (val) => typeof val === 'string',
 };
 
 function validateObject(obj: any, schema: ValidationSchema): { isValid: boolean, errors: string[] } {
