@@ -44,6 +44,17 @@ deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 deno run --allow-net --allow-read --allow-write --allow-env server.ts
 ```
 
+### Pterodactyl
+
+This project includes a Pterodactyl Egg for easy deployment on the Pterodactyl Panel. Find the file named `egg-yt-cipher.json`.
+
+1.  Navigate to your Panel's "Nests" section.
+2.  Create a new Nest or use an existing one.
+3.  Import the `egg-yt-cipher.json` file.
+4.  Create a new server using the "yt-cipher" Egg.
+5.  Configure the `API_TOKEN` in the "Startup" tab if desired.
+
+
 ## Authentication
 
 You can optionally set the `API_TOKEN` environment variable in your `docker-compose.yml` file to require a password to access the service.
@@ -57,6 +68,7 @@ Environment Variables:
 - `API_TOKEN` - A required password to access this service
 - `PORT` - Port to run the api on, default: `8001`
 - `HOST` - Sets the hostname for the deno server, default: `0.0.0.0`
+- `CACHE_DIR` - Directory to store the player script cache. Defaults to a `player_cache` directory in the current working directory.
 - `PREPROCESSED_CACHE_SIZE` - Max size of processed player script cache. Lower to consume less memory. default: `150`
 
 ## IPv6 Support

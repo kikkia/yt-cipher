@@ -3,7 +3,7 @@ import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { cacheSize } from "./metrics.ts";
 
-export const CACHE_DIR = join(Deno.cwd(), 'player_cache');
+export const CACHE_DIR = Deno.env.get("CACHE_DIR") || join(Deno.cwd(), 'player_cache');
 
 export async function getPlayerFilePath(playerUrl: string): Promise<string> {
     // This hash of the player script url will mean that diff region scripts are treated as unequals, even for the same version #

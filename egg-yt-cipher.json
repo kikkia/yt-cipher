@@ -1,0 +1,52 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "2.0.0",
+        "update_url": null
+    },
+    "exported_at": "2024-01-01T00:00:00+00:00",
+    "name": "yt-cipher",
+    "author": "kikkia",
+    "description": "A Deno-based server to solve YouTube's cipher challenges, designed for use with applications like yt-source and Lavalink.",
+    "features": null,
+    "docker_images": {
+        "ghcr.io/kikkia/yt-cipher:master": "ghcr.io/kikkia/yt-cipher:master"
+    },
+    "file_denylist": [],
+    "startup": "deno run --allow-net --allow-read --allow-write --allow-env server.ts",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"Server listening on\"\r\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/ash\r\n# yt-cipher Installation Script\r\n#\r\n# Server Files: /mnt/server\r\n\r\necho \"No installation required, using pre-built Docker image.\"",
+            "container": "alpine:3.18",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "API Token",
+            "description": "The optional API token for securing the server. Leave blank to disable authentication.",
+            "env_variable": "API_TOKEN",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:256",
+            "field_type": "text"
+        },
+        {
+            "name": "Cache Directory",
+            "description": "The directory to store the player cache. Defaults to a persistent location within the container.",
+            "env_variable": "CACHE_DIR",
+            "default_value": "/home/container/player_cache",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        }
+    ]
+}
