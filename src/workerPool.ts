@@ -1,7 +1,6 @@
 import type { WorkerWithStatus, Task } from "./types.ts";
 
-// const CONCURRENCY = parseInt(Deno.env.get("MAX_THREADS") || "", 10) || navigator.hardwareConcurrency || 1;
-const CONCURRENCY = 1;
+const CONCURRENCY = parseInt(Deno.env.get("MAX_THREADS") || "", 10) || navigator.hardwareConcurrency || 1;
 
 const workers: WorkerWithStatus[] = [];
 const taskQueue: Task[] = [];
