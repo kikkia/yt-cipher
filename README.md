@@ -2,6 +2,16 @@ An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs).
 
 # Getting Started
 
+## Lavalink
+The absolute easiest way to use this with Lavalink is to just add this to the youtube plugin config
+```yaml
+plugins:
+  youtube:
+    remoteCipher:
+      url: "https://cipher.kikkia.dev/"
+      userAgent: "your_service_name" # Optional
+```
+
 ## Public instance
 
 You can use the public instance without a password at `https://cipher.kikkia.dev/`. 
