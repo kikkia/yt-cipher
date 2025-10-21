@@ -15,7 +15,7 @@ plugins:
 ## Public instance
 
 You can use the public instance without a password at `https://cipher.kikkia.dev/`. 
-I do my best to keep it up and running and decently fast, but I don't garuntee 100% uptime. Feel free to host it yourself or use the public API.
+I do my best to keep it up and running and decently fast, but I don't guaruntee 100% uptime. Feel free to host it yourself or use the public API.
 
 WARNING: Ratelimit of 10 requests/sec (should be fine up to 1000+ active players). If you have more than 1k players you probably want to host it yourself.
 
@@ -44,7 +44,7 @@ git clone https://github.com/kikkia/yt-cipher.git
 cd yt-cipher
 git clone https://github.com/yt-dlp/ejs.git
 cd ejs
-git checkout 689764f8cea694e99609a41f1630d2e7e8e8668a
+git checkout c38bd7d1ab1c19cbc1336c546869d367471b51cc
 cd ..
 deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 ```
