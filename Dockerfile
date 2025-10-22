@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 RUN git clone https://github.com/yt-dlp/ejs.git
 
 # Pin to a specific commit to avoid breakages
-RUN cd ejs && git checkout c38bd7d1ab1c19cbc1336c546869d367471b51cc && cd ..
+RUN cd ejs && git checkout bf12d399b2da561e20d9462307e50c7b715a51d7 && deno install && cd ..
 
 COPY scripts/patch-ejs.ts ./scripts/patch-ejs.ts
 RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
@@ -22,7 +22,8 @@ COPY --from=builder /usr/src/app/ejs ./ejs
 
 COPY . .
 
-RUN mkdir -p player_cache && chown -R deno:deno player_cache
+RUN mkdir -p player_cache
+RUN chown -R deno:deno .
 
 EXPOSE 8001
 

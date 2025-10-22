@@ -14,7 +14,13 @@ export function withMetrics(handler: Next): Next {
         endpointHits.labels({ method: ctx.req.method, pathname, player_id: playerId, plugin_version: pluginVersion, user_agent: userAgent }).inc();
         const start = performance.now();
 
-        const response = await handler(ctx);
+        let response: Response;
+        try {
+            response = await handler(ctx);
+        } catch (e) {
+            const message = e instanceof Error ? e.message : String(e);
+            response = new Response(JSON.stringify({ error: message }), { status: 500, headers: { "Content-Type": "application/json" } });
+        }
 
         const duration = (performance.now() - start) / 1000;
         const cached = response.headers.get("X-Cache-Hit") === "true" ? "true" : "false";

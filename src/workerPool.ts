@@ -22,6 +22,7 @@ function dispatch() {
         if (type === 'success') {
             task.resolve(data);
         } else {
+            console.error("Received error from worker:", data);
             const err = new Error(data.message);
             err.stack = data.stack;
             task.reject(err);
