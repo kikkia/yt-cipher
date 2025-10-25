@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 RUN git clone https://github.com/yt-dlp/ejs.git
 
 # Pin to a specific commit to avoid breakages
-RUN cd ejs && git checkout 5d7bf090bb9a2a8f3e2dd13ded4a21a009224f87 && deno install && cd ..
+RUN cd ejs && git checkout 25b77b73108ae08451fb06b98a787712c06298a5 && deno install && cd ..
 
 COPY scripts/patch-ejs.ts ./scripts/patch-ejs.ts
 RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
