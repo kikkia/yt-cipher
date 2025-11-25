@@ -3,7 +3,6 @@
 
 FROM gcr.io/distroless/cc AS cc
 FROM ghcr.io/kikkia/yt-cipher:master AS yt-cipher
-#FROM tcely/deno AS deno
 FROM denoland/deno:alpine AS deno
 
 COPY --from=yt-cipher /usr/src/app /usr/src/app
