@@ -1,0 +1,49 @@
+# syntax=docker/dockerfile:1
+# check=error=true
+
+FROM gcr.io/distroless/cc AS cc
+FROM ghcr.io/kikkia/yt-cipher:master AS yt-cipher
+#FROM tcely/deno AS deno
+FROM denoland/deno:alpine AS deno
+
+COPY --from=yt-cipher /usr/src/app /usr/src/app
+
+USER root
+RUN sed -i.orig -e '1s/224/206/' /usr/src/app/src/playerCache.ts
+USER deno
+
+WORKDIR "${DENO_DIR}"
+
+RUN deno compile --no-check --include /usr/src/app/worker.ts --allow-env --allow-read --allow-write --allow-net /usr/src/app/server.ts
+
+USER root
+RUN install -v -t /usr/local/bin/ -o root -g wheel -m 0755 server
+
+FROM alpine:latest AS server
+
+ENV DENO_USE_CGROUPS="1"
+ENV DENO_INSTALL_ROOT="/usr/local"
+ENV DENO_DIR="/deno-dir/"
+
+# Inspired by https://github.com/dojyorin/deno_docker_image/blob/master/src/alpine.dockerfile
+COPY --from=cc --chown=root:root --chmod=755 /lib/*-linux-gnu/* /usr/local/lib/
+COPY --from=cc --chown=root:root --chmod=755 /lib/ld-linux-* /lib/
+
+RUN addgroup --gid 1000 deno \
+  && adduser --uid 1000 --disabled-password deno --ingroup deno \
+  && mkdir "${DENO_DIR}" \
+  && chown deno:deno "${DENO_DIR}" \
+  && mkdir /lib64 \
+  && ln -s /usr/local/lib/ld-linux-* /lib64/
+
+ENV LD_LIBRARY_PATH="/usr/local/lib"
+
+COPY --from=deno /tini /tini
+
+COPY --from=deno /usr/local/bin/ /usr/local/bin/
+
+VOLUME "${DENO_DIR}"
+WORKDIR "${DENO_DIR}"
+USER deno
+
+ENTRYPOINT ["/tini", "--", "/usr/local/bin/server"]
