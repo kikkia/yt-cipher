@@ -23,7 +23,7 @@ WORKDIR /app
 
 COPY --from=builder /tini /tini
 COPY --from=builder /usr/src/app/server /app/server
-COPY --from=builder /cache /cache
+COPY --from=builder --chown=nonroot:nonroot /cache /cache
 
 COPY --from=builder --chown=nonroot:nonroot /usr/src/app/player_cache /app/player_cache
 COPY --from=builder --chown=nonroot:nonroot /usr/src/app/player_cache /home/nonroot/.cache
