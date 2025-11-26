@@ -1,6 +1,6 @@
-import { crypto } from "https://deno.land/std@0.224.0/crypto/mod.ts";
-import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
-import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { crypto } from "jsr:@std/crypto@0.224.0";
+import { ensureDir } from "jsr:@std/fs@0.224.0";
+import { join } from "jsr:@std/path@0.224.0";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
 
 export const CACHE_DIR = join(Deno.cwd(), 'player_cache');
