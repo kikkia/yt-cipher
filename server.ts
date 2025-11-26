@@ -1,4 +1,4 @@
-import { serve } from "jsr:@std/http@0.224.0";
+import { serve } from "jsr:@std/http@0.224.5";
 import { initializeWorkers } from "./src/workerPool.ts";
 import { initializeCache } from "./src/playerCache.ts";
 import { handleDecryptSignature } from "./src/handlers/decryptSignature.ts";
