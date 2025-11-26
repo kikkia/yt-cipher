@@ -4,16 +4,11 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y git npm
 
-RUN git clone https://github.com/yt-dlp/ejs.git
-# Pin to a specific commit
-RUN cd ejs && git checkout 2655b1f55f98e5870d4e124704a21f4d793b4e1c && cd ..
-
-COPY scripts/patch-ejs.ts ./scripts/patch-ejs.ts
-RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
-
-RUN rm -rf ./ejs/.git ./ejs/node_modules || true
-
 COPY . .
+
+RUN git submodule update --init --recursive
+
+RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 
 RUN deno compile \
     --no-check \
