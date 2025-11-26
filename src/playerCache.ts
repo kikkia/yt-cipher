@@ -3,7 +3,8 @@ import { ensureDir } from "@std/fs";
 import { join } from "@std/path";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
 
-export const CACHE_DIR = join(Deno.cwd(), 'player_cache');
+export const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME") || join(Deno.env.get("HOME"), '.cache');
+export const CACHE_DIR = join(CACHE_HOME, 'yt-cipher', 'player_cache');
 
 export async function getPlayerFilePath(playerUrl: string): Promise<string> {
     // This hash of the player script url will mean that diff region scripts are treated as unequals, even for the same version #
