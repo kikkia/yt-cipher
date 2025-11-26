@@ -8,10 +8,7 @@ COPY . .
 
 RUN git submodule update --init --recursive
 
-RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
-
 RUN deno compile \
-    --no-check \
     --output server \
     --allow-net --allow-read --allow-write --allow-env \
     --include worker.ts \
