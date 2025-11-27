@@ -5,9 +5,12 @@ import { cacheSize, playerScriptFetches } from "./metrics.ts";
 
 let cache_prefix = Deno.cwd();
 const HOME = Deno.env.get("HOME");
+if ( HOME ) {
+    cache_prefix = join(HOME, '.cache', 'yt-cipher');
+}
 const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME");
-if ( HOME !== undefined ) {
-    cache_prefix = join(CACHE_HOME || join(HOME, '.cache'), 'yt-cipher');
+if ( CACHE_HOME ) {
+    cache_prefix = join(CACHE_HOME, 'yt-cipher');
 }
 export const CACHE_DIR = join(cache_prefix, 'player_cache');
 
