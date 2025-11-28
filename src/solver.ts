@@ -29,7 +29,7 @@ export async function getSolvers(player_url: string): Promise<Solvers | null> {
         }
         preprocessedCache.set(playerCacheKey, preprocessedPlayer);
     }
-    
+
     solvers = getFromPrepared(preprocessedPlayer);
     if (solvers) {
         solverCache.set(playerCacheKey, solvers);
