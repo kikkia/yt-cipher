@@ -1,12 +1,13 @@
-import type { WorkerWithStatus, Task } from "./types.ts";
+import type { Task, WorkerWithStatus } from "./types.ts";
 
-const CONCURRENCY = parseInt(Deno.env.get("MAX_THREADS") || "", 10) || navigator.hardwareConcurrency || 1;
+const CONCURRENCY = parseInt(Deno.env.get("MAX_THREADS") || "", 10) ||
+    navigator.hardwareConcurrency || 1;
 
 const workers: WorkerWithStatus[] = [];
 const taskQueue: Task[] = [];
 
 function dispatch() {
-    const idleWorker = workers.find(w => w.isIdle);
+    const idleWorker = workers.find((w) => w.isIdle);
     if (!idleWorker || taskQueue.length === 0) {
         return;
     }
@@ -19,7 +20,7 @@ function dispatch() {
         idleWorker.isIdle = true;
 
         const { type, data } = e.data;
-        if (type === 'success') {
+        if (type === "success") {
             task.resolve(data);
         } else {
             console.error("Received error from worker:", data);
@@ -43,7 +44,10 @@ export function execInPool(data: string): Promise<string> {
 
 export function initializeWorkers() {
     for (let i = 0; i < CONCURRENCY; i++) {
-        const worker: WorkerWithStatus = new Worker(new URL("../worker.ts", import.meta.url).href, { type: "module" });
+        const worker: WorkerWithStatus = new Worker(
+            new URL("../worker.ts", import.meta.url).href,
+            { type: "module" },
+        );
         worker.isIdle = true;
         workers.push(worker);
     }
