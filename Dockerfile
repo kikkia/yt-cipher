@@ -1,12 +1,10 @@
+ARG XDG_CACHE_HOME
+
 FROM denoland/deno:debian AS builder
 
 WORKDIR /usr/src/app
 
 COPY . .
-
-# needs --build-arg BUILDKIT_CONTEXT_KEEP_GIT_DIR=1 when using a URL
-#RUN apt-get update && apt-get install -y git && \
-#    git submodule update --init --recursive
 
 RUN deno compile \
     --output server \
@@ -22,9 +20,16 @@ WORKDIR /app
 COPY --from=builder /tini /tini
 COPY --from=builder /usr/src/app/server /app/server
 
-RUN install -v -d -m 1777 /cache && \
-    install -v -d -o nonroot -g nonroot -m 750 /app/player_cache /home/nonroot/.cache
+ARG XDG_CACHE_HOME
+ENV XDG_CACHE_HOME="${XDG_CACHE_HOME}"
+# Create the fall-back cache directories
+RUN install -v -d -o nonroot -g nonroot -m 750 \
+        /app/player_cache /home/nonroot/.cache && \
+    test -z "${XDG_CACHE_HOME}" || install -v -d -m 1777 "${XDG_CACHE_HOME}"
 
 EXPOSE 8001
+USER nonroot
 ENTRYPOINT ["/tini", "--"]
-CMD ["/busybox/busybox", "su", "-s", "/app/server", "nonroot"]
+# Run the server as nonroot even when /tini runs as root
+# CMD ["/busybox/busybox", "su", "-s", "/app/server", "nonroot"]
+CMD ["/app/server"]
