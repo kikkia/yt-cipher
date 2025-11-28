@@ -75,7 +75,7 @@ async function baseHandler(req: Request): Promise<Response> {
 
 const handler = baseHandler;
 
-const port = Deno.env.get("PORT") || 8001;
+const port = Deno.env.get("PORT") || "8001";
 const host = Deno.env.get("HOST") || "0.0.0.0";
 
 await initializeCache();
