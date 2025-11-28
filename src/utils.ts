@@ -17,7 +17,7 @@ export function validateAndNormalizePlayerUrl(playerUrl: string): string {
         } else {
             throw new Error(`Player URL from invalid host: ${url.hostname}`);
         }
-    } catch (e) {
+    } catch (_e) {
         // Not a valid URL, and not a valid path.
         throw new Error(`Invalid player URL: ${playerUrl}`);
     }
@@ -30,7 +30,7 @@ export function extractPlayerId(playerUrl: string): string {
         if (playerIndex !== -1 && playerIndex + 1 < pathParts.length) {
             return pathParts[playerIndex + 1];
         }
-    } catch (e) {
+    } catch (_e) {
         // Fallback for relative paths
         const match = playerUrl.match(/\/s\/player\/([^\/]+)/);
         if (match) {
