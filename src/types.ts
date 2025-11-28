@@ -1,4 +1,7 @@
-import type { Input as MainInput, Output as MainOutput } from "../ejs/src/yt/solver/main.ts";
+import type {
+    Input as MainInput,
+    Output as MainOutput,
+} from "../ejs/src/yt/solver/main.ts";
 
 export interface Solvers {
     n: ((val: string) => string) | null;
@@ -49,7 +52,7 @@ export interface Task {
 export type ApiRequest = SignatureRequest | StsRequest | ResolveUrlRequest;
 
 // Parsing into this context helps avoid multi copies of requests
-// since request body can only be read once. 
+// since request body can only be read once.
 export interface RequestContext {
     req: Request;
     body: ApiRequest;
