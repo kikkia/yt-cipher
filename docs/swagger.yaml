@@ -6,7 +6,7 @@ info:
 servers:
   - url: /
 paths:
-  /decryptSignature:
+  /decrypt_signature:
     post:
       summary: Decrypts a signature
       requestBody:
@@ -16,7 +16,11 @@ paths:
             schema:
               type: object
               properties:
-                signature:
+                encrypted_signature:
+                  type: string
+                n_param:
+                  type: string
+                player_url:
                   type: string
       responses:
         '200':
@@ -26,11 +30,22 @@ paths:
               schema:
                 type: object
                 properties:
-                  decryptedSignature:
+                  decrypted_signature:
                     type: string
-  /getSts:
+                  decrypted_n_sig:
+                    type: string
+  /get_sts:
     post:
       summary: Gets a Short-Term Secret (STS)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                player_url:
+                  type: string
       responses:
         '200':
           description: STS value
@@ -41,7 +56,7 @@ paths:
                 properties:
                   sts:
                     type: string
-  /resolveUrl:
+  /resolve_url:
     post:
       summary: Resolves a URL
       requestBody:
@@ -51,7 +66,15 @@ paths:
             schema:
               type: object
               properties:
-                url:
+                stream_url:
+                  type: string
+                player_url:
+                  type: string
+                encrypted_signature:
+                  type: string
+                signature_key:
+                  type: string
+                n_param:
                   type: string
       responses:
         '200':
@@ -61,5 +84,5 @@ paths:
               schema:
                 type: object
                 properties:
-                  resolvedUrl:
+                  resolved_url:
                     type: string
