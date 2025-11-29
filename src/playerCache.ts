@@ -1,6 +1,6 @@
 import { crypto } from "@std/crypto";
-import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
-import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { ensureDir } from "@std/fs";
+import { join } from "@std/path";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
 
 export const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME") || join(Deno.env.get("HOME") ?? Deno.cwd(), '.cache');
