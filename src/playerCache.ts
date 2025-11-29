@@ -3,7 +3,7 @@ import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
 
-export const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME") || join(Deno.env.get("HOME"), '.cache');
+export const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME") || join(Deno.env.get("HOME") ?? Deno.cwd(), '.cache');
 export const CACHE_DIR = join(CACHE_HOME, 'yt-cipher', 'player_cache');
 
 export async function getPlayerFilePath(playerUrl: string): Promise<string> {
