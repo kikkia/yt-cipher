@@ -3,7 +3,10 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-# This workflow will install Deno then run `deno fmt` and `deno lint`.
+# This workflow will install Deno then run:
+# - `deno fmt`
+# - `deno lint`
+# - `deno check`
 # For more information see: https://github.com/denoland/setup-deno
 
 name: Deno
@@ -36,6 +39,9 @@ jobs:
 
       - name: Run linter
         run: deno lint src *.ts
+
+      - name: Check types
+        run: deno check --frozen=true *.ts
 
       # - name: Run tests
       #   run: deno test -A
