@@ -27,7 +27,10 @@ function validateObject(
 ): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
     for (const key in schema) {
-        if (!obj.hasOwnProperty(key) || !schema[key](obj[key])) {
+        if (
+            !Object.prototype.hasOwnProperty.call(obj, key) ||
+            !schema[key](obj[key])
+        ) {
             errors.push(`'${key}' is missing or invalid`);
         }
     }
