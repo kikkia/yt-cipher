@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: yt-cipher API
+  description: A web service for solving YouTube's cipher challenges.
+  version: 1.0.0
+servers:
+  - url: /
+paths:
+  /decryptSignature:
+    post:
+      summary: Decrypts a signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                signature:
+                  type: string
+      responses:
+        '200':
+          description: Decrypted signature
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  decryptedSignature:
+                    type: string
+  /getSts:
+    post:
+      summary: Gets a Short-Term Secret (STS)
+      responses:
+        '200':
+          description: STS value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sts:
+                    type: string
+  /resolveUrl:
+    post:
+      summary: Resolves a URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+      responses:
+        '200':
+          description: Resolved URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resolvedUrl:
+                    type: string
