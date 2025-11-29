@@ -22,7 +22,11 @@
                 SwaggerUIBundle.presets.apis,
                 SwaggerUIBundle.SwaggerUIStandalonePreset
             ],
-            layout: "BaseLayout"
+            layout: "BaseLayout",
+            requestInterceptor: (req) => {
+                req.headers['User-Agent'] = 'gh-pages';
+                return req;
+            }
         })
     </script>
 </body>
