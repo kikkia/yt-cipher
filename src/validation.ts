@@ -3,6 +3,7 @@ import { validateAndNormalizePlayerUrl } from "./utils.ts";
 
 type Next = (ctx: RequestContext) => Promise<Response>;
 type ValidationSchema = {
+    // deno-lint-ignore no-explicit-any
     [key: string]: (value: any) => boolean;
 };
 
@@ -20,6 +21,7 @@ const resolveUrlRequestSchema: ValidationSchema = {
 };
 
 function validateObject(
+    // deno-lint-ignore no-explicit-any
     obj: any,
     schema: ValidationSchema,
 ): { isValid: boolean; errors: string[] } {

@@ -41,6 +41,7 @@ export interface WorkerWithStatus extends Worker {
 export interface Task {
     data: string;
     resolve: (output: string) => void;
+    // deno-lint-ignore no-explicit-any
     reject: (error: any) => void;
 }
 
