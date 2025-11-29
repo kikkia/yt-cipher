@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Setup repo
         uses: actions/checkout@v6
+        with:
+          submodules: recursive
 
       - name: Setup Deno
         uses: denoland/setup-deno@v2
