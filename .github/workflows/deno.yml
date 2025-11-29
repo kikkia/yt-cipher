@@ -40,7 +40,7 @@ jobs:
         run: deno fmt --check
 
       - name: Run linter
-        run: deno lint src *.ts
+        run: deno lint
 
       - name: Check types
         run: deno check --frozen=false *.ts

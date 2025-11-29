@@ -11,6 +11,7 @@
     "meriyah": "npm:meriyah@^6.1.4"
   },
   "lint": {
+    "include": ["src/", "*.ts"],
     "rules": {
       "exclude": [ "no-import-prefix" ]
     }
