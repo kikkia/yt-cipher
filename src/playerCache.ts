@@ -1,4 +1,4 @@
-import { crypto } from "jsr:@std/crypto@0.224.0";
+import { crypto } from "@std/crypto";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
