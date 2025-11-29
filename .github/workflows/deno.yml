@@ -37,7 +37,7 @@ jobs:
           cache: true
 
       - name: Verify formatting
-        run: deno fmt --check --indent-width=4 src *.ts
+        run: deno fmt --check
 
       - name: Run linter
         run: deno lint src *.ts
