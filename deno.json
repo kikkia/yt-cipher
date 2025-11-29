@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "lib": [ "deno.worker" ]
+  },
+  "fmt": {
+    "include": ["src/", "*.ts"],
+    "indentWidth": 4
+  },
+  "imports": {
+    "astring": "npm:astring@^1.9.0",
+    "meriyah": "npm:meriyah@^6.1.4"
+  },
+  "lint": {
+    "include": ["src/", "*.ts"],
+    "rules": {
+      "exclude": [ "no-import-prefix" ]
+    }
+  }
+}

@@ -2,9 +2,9 @@ const ALLOWED_HOSTNAMES = ["youtube.com", "www.youtube.com", "m.youtube.com"];
 
 export function validateAndNormalizePlayerUrl(playerUrl: string): string {
     // Handle relative paths
-    if (playerUrl.startsWith('/')) {
-        if (playerUrl.startsWith('/s/player/')) {
-             return `https://www.youtube.com${playerUrl}`;
+    if (playerUrl.startsWith("/")) {
+        if (playerUrl.startsWith("/s/player/")) {
+            return `https://www.youtube.com${playerUrl}`;
         }
         throw new Error(`Invalid player path: ${playerUrl}`);
     }
@@ -17,7 +17,7 @@ export function validateAndNormalizePlayerUrl(playerUrl: string): string {
         } else {
             throw new Error(`Player URL from invalid host: ${url.hostname}`);
         }
-    } catch (e) {
+    } catch (_e) {
         // Not a valid URL, and not a valid path.
         throw new Error(`Invalid player URL: ${playerUrl}`);
     }
@@ -25,17 +25,17 @@ export function validateAndNormalizePlayerUrl(playerUrl: string): string {
 export function extractPlayerId(playerUrl: string): string {
     try {
         const url = new URL(playerUrl);
-        const pathParts = url.pathname.split('/');
-        const playerIndex = pathParts.indexOf('player');
+        const pathParts = url.pathname.split("/");
+        const playerIndex = pathParts.indexOf("player");
         if (playerIndex !== -1 && playerIndex + 1 < pathParts.length) {
             return pathParts[playerIndex + 1];
         }
-    } catch (e) {
+    } catch (_e) {
         // Fallback for relative paths
         const match = playerUrl.match(/\/s\/player\/([^\/]+)/);
         if (match) {
             return match[1];
         }
     }
-    return 'unknown';
+    return "unknown";
 }
