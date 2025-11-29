@@ -38,6 +38,7 @@ function validateObject(
 }
 
 export function withValidation(handler: Next): Next {
+    // deno-lint-ignore require-await
     return async (ctx: RequestContext) => {
         const { pathname } = new URL(ctx.req.url);
 
