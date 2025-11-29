@@ -1,3 +1,5 @@
+# yt-cipher
+
 An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs).
 
 # Getting Started
