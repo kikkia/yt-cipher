@@ -30,6 +30,7 @@ WORKDIR /app
 COPY --from=builder /usr/src/app/server /app/server
 
 COPY --from=builder --chown=nonroot:nonroot /usr/src/app/player_cache /app/player_cache
+COPY --from=builder --chown=nonroot:nonroot /usr/src/app/docs /app/docs
 
 USER nonroot
 EXPOSE 8001
