@@ -2,7 +2,7 @@ FROM denoland/deno:latest AS builder
 
 WORKDIR /usr/src/app
 
-RUN apt-get update && apt-get install -y git npm
+RUN apt-get update && apt-get install -y git
 
 RUN git clone https://github.com/yt-dlp/ejs.git
 # Pin to a specific commit
@@ -32,6 +32,7 @@ WORKDIR /app
 COPY --from=builder /usr/src/app/server /app/server
 
 COPY --from=builder --chown=nonroot:nonroot /usr/src/app/player_cache /app/player_cache
+COPY --from=builder --chown=nonroot:nonroot /usr/src/app/docs /app/docs
 
 USER nonroot
 EXPOSE 8001
