@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yt-cipher</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css">
+</head>
+<body>
+    <h1>yt-cipher</h1>
+    <p>A web service for solving YouTube's cipher challenges.</p>
+    <a href="https://github.com/kikkia/yt-cipher">View on GitHub</a>
+    
+    <h2>API Documentation</h2>
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
+    <script>
+        SwaggerUIBundle({
+            url: "swagger.yaml",
+            dom_id: '#swagger-ui',
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.SwaggerUIStandalonePreset
+            ],
+            layout: "BaseLayout",
+            requestInterceptor: (req) => {
+                req.headers['User-Agent'] = 'gh-pages';
+                return req;
+            }
+        })
+    </script>
+</body>
+</html>

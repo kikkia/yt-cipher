@@ -20,6 +20,8 @@ WORKDIR /app
 COPY --from=builder /tini /tini
 COPY --from=builder /usr/src/app/server /app/server
 
+COPY --from=builder --chown=nonroot:nonroot /usr/src/app/docs /app/docs
+
 ARG XDG_CACHE_HOME
 ENV XDG_CACHE_HOME="${XDG_CACHE_HOME}"
 # Create the fall-back cache directories

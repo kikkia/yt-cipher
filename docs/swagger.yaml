@@ -1,0 +1,88 @@
+openapi: 3.0.0
+info:
+  title: yt-cipher API
+  description: A web service for solving YouTube's cipher challenges.
+  version: 1.0.0
+servers:
+  - url: /
+paths:
+  /decrypt_signature:
+    post:
+      summary: Decrypts a signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                encrypted_signature:
+                  type: string
+                n_param:
+                  type: string
+                player_url:
+                  type: string
+      responses:
+        '200':
+          description: Decrypted signature
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  decrypted_signature:
+                    type: string
+                  decrypted_n_sig:
+                    type: string
+  /get_sts:
+    post:
+      summary: Gets a Short-Term Secret (STS)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                player_url:
+                  type: string
+      responses:
+        '200':
+          description: STS value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sts:
+                    type: string
+  /resolve_url:
+    post:
+      summary: Resolves a URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stream_url:
+                  type: string
+                player_url:
+                  type: string
+                encrypted_signature:
+                  type: string
+                signature_key:
+                  type: string
+                n_param:
+                  type: string
+      responses:
+        '200':
+          description: Resolved URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resolved_url:
+                    type: string
