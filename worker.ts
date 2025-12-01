@@ -1,4 +1,4 @@
-import { preprocessPlayer } from "./ejs/src/yt/solver/solvers.ts";
+import { preprocessPlayer } from "ejs/src/yt/solver/solvers.ts";
 
 self.onmessage = (e: MessageEvent<string>) => {
     try {
