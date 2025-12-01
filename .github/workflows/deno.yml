@@ -43,7 +43,7 @@ jobs:
         run: deno lint
 
       - name: Check types
-        run: deno check --frozen=false *.ts
+        run: deno check --frozen=true *.ts
 
       # - name: Run tests
       #   run: deno test -A
