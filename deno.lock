@@ -105,6 +105,10 @@
     "https://deno.land/x/ts_prometheus@v0.3.0/mod.ts": "9fef6a6c301da262dfa38d111cb4011e96d0c6b1c9f1a233526506c8ce8723bb",
     "https://deno.land/x/ts_prometheus@v0.3.0/registry.ts": "b7d4b4b6e008d7ffb8b4acff6a1a56b27463bfb4ecec4f0455562187f7941891",
     "https://deno.land/x/ts_prometheus@v0.3.0/summary.ts": "d1ef0341e265fa8d2a2bc42e8d732428d8aadbfa0f60ce4c2baa0486910590df",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.0&standalone/src/yt/solver/main.ts": "8b2cdc4da906b66f79df57d9cc715badfe92a793faa59841e6ccb641c604ea55",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.0&standalone/src/yt/solver/solvers.ts": "269a7e74a2f021621402fbee5872168564196151df892df8fb17229b593dd0b3",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.0/denonext/src/yt/solver/main.ts.bundle.mjs": "1dcc16eb6921cac07e440b991c74fb928f49a22554bd422df3aa8ddd09c46e26",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.0/denonext/src/yt/solver/solvers.ts.bundle.mjs": "88c7e36c180c2f9416fd26ba9a7db344d8008a7f1069e5d7a91c0bdde44a5656"
   },
   "workspace": {
     "dependencies": [

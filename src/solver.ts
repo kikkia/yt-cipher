@@ -2,7 +2,7 @@ import { execInPool } from "./workerPool.ts";
 import { getPlayerFilePath } from "./playerCache.ts";
 import { preprocessedCache } from "./preprocessedCache.ts";
 import { solverCache } from "./solverCache.ts";
-import { getFromPrepared } from "../ejs/src/yt/solver/solvers.ts";
+import { getFromPrepared } from "ejs/src/yt/solver/solvers.ts";
 import type { Solvers } from "./types.ts";
 import { workerErrors } from "./metrics.ts";
 import { extractPlayerId } from "./utils.ts";
