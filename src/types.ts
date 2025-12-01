@@ -41,13 +41,14 @@ export interface WorkerWithStatus extends Worker {
 export interface Task {
     data: string;
     resolve: (output: string) => void;
+    // deno-lint-ignore no-explicit-any
     reject: (error: any) => void;
 }
 
 export type ApiRequest = SignatureRequest | StsRequest | ResolveUrlRequest;
 
 // Parsing into this context helps avoid multi copies of requests
-// since request body can only be read once. 
+// since request body can only be read once.
 export interface RequestContext {
     req: Request;
     body: ApiRequest;

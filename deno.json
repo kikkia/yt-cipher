@@ -2,11 +2,21 @@
   "compilerOptions": {
     "lib": [ "deno.worker" ]
   },
+  "fmt": {
+    "include": ["src/", "*.ts"],
+    "indentWidth": 4
+  },
   "imports": {
     "@std/crypto": "jsr:@std/crypto@^0.224.0",
     "@std/fs": "jsr:@std/fs@^0.224.0",
     "@std/http": "jsr:@std/http@0.224.5",
     "@std/path": "jsr:@std/path@^0.224.0",
     "ejs/": "https://esm.sh/gh/yt-dlp/ejs@0.3.0&standalone/"
+  },
+  "lint": {
+    "include": ["src/", "*.ts"],
+    "rules": {
+      "exclude": [ "no-import-prefix" ]
+    }
   }
 }
