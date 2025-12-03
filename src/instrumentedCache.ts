@@ -1,5 +1,5 @@
 import { cacheSize } from "./metrics.ts";
-import { LRU } from "https://deno.land/x/lru@1.0.2/mod.ts";
+import { LRU } from "lru/mod.ts";
 
 export class InstrumentedLRU<T> extends LRU<T> {
     constructor(private cacheName: string, maxSize: number) {
