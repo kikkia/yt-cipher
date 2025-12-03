@@ -1,9 +1,4 @@
-import {
-    Counter,
-    Gauge,
-    Histogram,
-    Registry,
-} from "https://deno.land/x/ts_prometheus/mod.ts";
+import { Counter, Gauge, Histogram, Registry } from "ts_prometheus/mod.ts";
 
 export const registry = new Registry();
 
