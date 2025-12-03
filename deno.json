@@ -16,9 +16,6 @@
     "ts_prometheus/": "https://esm.sh/gh/marcopacini/ts_prometheus@v0.3.0/"
   },
   "lint": {
-    "include": ["src/", "*.ts"],
-    "rules": {
-      "exclude": [ "no-import-prefix" ]
-    }
+    "include": ["src/", "*.ts"]
   }
 }
