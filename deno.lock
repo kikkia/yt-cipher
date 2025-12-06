@@ -3,6 +3,7 @@
   "specifiers": {
     "jsr:@std/assert@0.224": "0.224.0",
     "jsr:@std/async@^1.0.0-rc.1": "1.0.15",
+    "jsr:@std/cache@~0.2.1": "0.2.1",
     "jsr:@std/cli@~0.224.7": "0.224.7",
     "jsr:@std/crypto@0.224": "0.224.0",
     "jsr:@std/encoding@0.224": "0.224.3",
@@ -22,6 +23,9 @@
     },
     "@std/async@1.0.15": {
       "integrity": "55d1d9d04f99403fe5730ab16bdcc3c47f658a6bf054cafb38a50f046238116e"
+    },
+    "@std/cache@0.2.1": {
+      "integrity": "b6f1abfd118d35b1c4ca90f2b3f4c709a2014ae368f244bdc7533bf1c169d759"
     },
     "@std/cli@0.224.7": {
       "integrity": "654ca6477518e5e3a0d3fabafb2789e92b8c0febf1a1d24ba4b567aba94b5977"
@@ -82,7 +86,6 @@
     }
   },
   "remote": {
-    "https://deno.land/x/lru@1.0.2/mod.ts": "1d44b87c4d40ff33749ae5fd85fe234344e0dace835fdfeb48413edea9461159",
     "https://esm.sh/gh/marcopacini/ts_prometheus@v0.3.0/denonext/mod.ts.mjs": "3a2e38e83add647f9758c140a30b3ef84f326cbc00ef75ca6c2331c81415ae58",
     "https://esm.sh/gh/marcopacini/ts_prometheus@v0.3.0/mod.ts": "2a754040ada85e5dc78e77c1c619cca9992be7d63a90994861aeaec49ed467f3",
     "https://esm.sh/gh/yt-dlp/ejs@0.3.0&standalone/src/yt/solver/solvers.ts": "269a7e74a2f021621402fbee5872168564196151df892df8fb17229b593dd0b3",
@@ -90,6 +93,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@std/cache@~0.2.1",
       "jsr:@std/crypto@0.224",
       "jsr:@std/fs@0.224",
       "jsr:@std/http@0.224.5",
