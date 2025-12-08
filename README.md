@@ -32,7 +32,7 @@ git clone https://github.com/kikkia/yt-cipher.git
 
 cd yt-cipher
 
-docker-compose up
+docker compose up
 ```
 
 ### Deno
