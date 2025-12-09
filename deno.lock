@@ -89,7 +89,9 @@
     "https://esm.sh/gh/marcopacini/ts_prometheus@v0.3.0/denonext/mod.ts.mjs": "3a2e38e83add647f9758c140a30b3ef84f326cbc00ef75ca6c2331c81415ae58",
     "https://esm.sh/gh/marcopacini/ts_prometheus@v0.3.0/mod.ts": "2a754040ada85e5dc78e77c1c619cca9992be7d63a90994861aeaec49ed467f3",
     "https://esm.sh/gh/yt-dlp/ejs@0.3.0&standalone/src/yt/solver/solvers.ts": "269a7e74a2f021621402fbee5872168564196151df892df8fb17229b593dd0b3",
-    "https://esm.sh/gh/yt-dlp/ejs@0.3.0/denonext/src/yt/solver/solvers.ts.bundle.mjs": "88c7e36c180c2f9416fd26ba9a7db344d8008a7f1069e5d7a91c0bdde44a5656"
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.0/denonext/src/yt/solver/solvers.ts.bundle.mjs": "88c7e36c180c2f9416fd26ba9a7db344d8008a7f1069e5d7a91c0bdde44a5656",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.2&standalone/src/yt/solver/solvers.ts": "72a4211a3a6a3d0f0da77a32080d20743ebc90971aa7298fcc2b3eb099315157",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.2/denonext/src/yt/solver/solvers.ts.bundle.mjs": "f4d41475fd3dd459ab5f9bdaac55fffe57239a13554234a0ae3217949baad899"
   },
   "workspace": {
     "dependencies": [
