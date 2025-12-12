@@ -1,17 +1,31 @@
-import { crypto } from "https://deno.land/std@0.224.0/crypto/mod.ts";
-import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
-import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { crypto } from "@std/crypto";
+import { ensureDir } from "@std/fs";
+import { join } from "@std/path";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
 
-export const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME") || join(Deno.env.get("HOME"), '.cache');
-export const CACHE_DIR = join(CACHE_HOME, 'yt-cipher', 'player_cache');
+let cache_prefix: string;
+const HOME = Deno.env.get("HOME");
+const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME");
+if (CACHE_HOME) {
+    cache_prefix = join(CACHE_HOME, "yt-cipher");
+} else if (HOME) {
+    cache_prefix = join(HOME, ".cache", "yt-cipher");
+} else {
+    cache_prefix = Deno.cwd();
+}
+export const CACHE_DIR = join(cache_prefix, "player_cache");
 
 export async function getPlayerFilePath(playerUrl: string): Promise<string> {
     // This hash of the player script url will mean that diff region scripts are treated as unequals, even for the same version #
     // I dont think I have ever seen 2 scripts of the same version differ between regions but if they ever do this will catch it
     // As far as player script access, I haven't ever heard about YT ratelimiting those either so ehh
-    const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(playerUrl));
-    const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    const hashBuffer = await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(playerUrl),
+    );
+    const hash = Array.from(new Uint8Array(hashBuffer)).map((b) =>
+        b.toString(16).padStart(2, "0")
+    ).join("");
     const filePath = join(CACHE_DIR, `${hash}.js`);
 
     try {
@@ -23,9 +37,14 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
         if (error instanceof Deno.errors.NotFound) {
             console.log(`Cache miss for player: ${playerUrl}. Fetching...`);
             const response = await fetch(playerUrl);
-            playerScriptFetches.labels({ player_url: playerUrl, status: response.statusText }).inc();
+            playerScriptFetches.labels({
+                player_url: playerUrl,
+                status: response.statusText,
+            }).inc();
             if (!response.ok) {
-                throw new Error(`Failed to fetch player from ${playerUrl}: ${response.statusText}`);
+                throw new Error(
+                    `Failed to fetch player from ${playerUrl}: ${response.statusText}`,
+                );
             }
             const playerContent = await response.text();
             await Deno.writeTextFile(filePath, playerContent);
@@ -35,8 +54,8 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
             for await (const _ of Deno.readDir(CACHE_DIR)) {
                 fileCount++;
             }
-            cacheSize.labels({ cache_name: 'player' }).set(fileCount);
-            
+            cacheSize.labels({ cache_name: "player" }).set(fileCount);
+
             console.log(`Saved player to cache: ${filePath}`);
             return filePath;
         }
@@ -55,7 +74,8 @@ export async function initializeCache() {
         if (dirEntry.isFile) {
             const filePath = join(CACHE_DIR, dirEntry.name);
             const stat = await Deno.stat(filePath);
-            const lastAccessed = stat.atime?.getTime() ?? stat.mtime?.getTime() ?? stat.birthtime?.getTime();
+            const lastAccessed = stat.atime?.getTime() ??
+                stat.mtime?.getTime() ?? stat.birthtime?.getTime();
             if (lastAccessed && (Date.now() - lastAccessed > thirtyDays)) {
                 console.log(`Deleting stale player cache file: ${filePath}`);
                 await Deno.remove(filePath);
@@ -64,6 +84,6 @@ export async function initializeCache() {
             }
         }
     }
-    cacheSize.labels({ cache_name: 'player' }).set(fileCount);
+    cacheSize.labels({ cache_name: "player" }).set(fileCount);
     console.log(`Player cache directory ensured at: ${CACHE_DIR}`);
 }

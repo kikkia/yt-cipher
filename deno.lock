@@ -1,0 +1,105 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@std/assert@0.224": "0.224.0",
+    "jsr:@std/async@^1.0.0-rc.1": "1.0.15",
+    "jsr:@std/cache@~0.2.1": "0.2.1",
+    "jsr:@std/cli@~0.224.7": "0.224.7",
+    "jsr:@std/crypto@0.224": "0.224.0",
+    "jsr:@std/encoding@0.224": "0.224.3",
+    "jsr:@std/encoding@1.0.0-rc.2": "1.0.0-rc.2",
+    "jsr:@std/fmt@~0.225.4": "0.225.6",
+    "jsr:@std/fs@0.224": "0.224.0",
+    "jsr:@std/http@0.224.5": "0.224.5",
+    "jsr:@std/media-types@^1.0.0-rc.1": "1.1.0",
+    "jsr:@std/net@~0.224.3": "0.224.5",
+    "jsr:@std/path@0.224": "0.224.0",
+    "jsr:@std/path@1.0.0-rc.2": "1.0.0-rc.2",
+    "jsr:@std/streams@~0.224.5": "0.224.5"
+  },
+  "jsr": {
+    "@std/assert@0.224.0": {
+      "integrity": "8643233ec7aec38a940a8264a6e3eed9bfa44e7a71cc6b3c8874213ff401967f"
+    },
+    "@std/async@1.0.15": {
+      "integrity": "55d1d9d04f99403fe5730ab16bdcc3c47f658a6bf054cafb38a50f046238116e"
+    },
+    "@std/cache@0.2.1": {
+      "integrity": "b6f1abfd118d35b1c4ca90f2b3f4c709a2014ae368f244bdc7533bf1c169d759"
+    },
+    "@std/cli@0.224.7": {
+      "integrity": "654ca6477518e5e3a0d3fabafb2789e92b8c0febf1a1d24ba4b567aba94b5977"
+    },
+    "@std/crypto@0.224.0": {
+      "integrity": "154ef3ff08ef535562ef1a718718c5b2c5fc3808f0f9100daad69e829bfcdf2d",
+      "dependencies": [
+        "jsr:@std/assert",
+        "jsr:@std/encoding@0.224"
+      ]
+    },
+    "@std/encoding@0.224.3": {
+      "integrity": "5e861b6d81be5359fad4155e591acf17c0207b595112d1840998bb9f476dbdaf"
+    },
+    "@std/encoding@1.0.0-rc.2": {
+      "integrity": "160d7674a20ebfbccdf610b3801fee91cf6e42d1c106dd46bbaf46e395cd35ef"
+    },
+    "@std/fmt@0.225.6": {
+      "integrity": "aba6aea27f66813cecfd9484e074a9e9845782ab0685c030e453a8a70b37afc8"
+    },
+    "@std/fs@0.224.0": {
+      "integrity": "52a5ec89731ac0ca8f971079339286f88c571a4d61686acf75833f03a89d8e69",
+      "dependencies": [
+        "jsr:@std/assert",
+        "jsr:@std/path@0.224"
+      ]
+    },
+    "@std/http@0.224.5": {
+      "integrity": "b03b5d1529f6c423badfb82f6640f9f2557b4034cd7c30655ba5bb447ff750a4",
+      "dependencies": [
+        "jsr:@std/async",
+        "jsr:@std/cli",
+        "jsr:@std/encoding@1.0.0-rc.2",
+        "jsr:@std/fmt",
+        "jsr:@std/media-types",
+        "jsr:@std/net",
+        "jsr:@std/path@1.0.0-rc.2",
+        "jsr:@std/streams"
+      ]
+    },
+    "@std/media-types@1.1.0": {
+      "integrity": "c9d093f0c05c3512932b330e3cc1fe1d627b301db33a4c2c2185c02471d6eaa4"
+    },
+    "@std/net@0.224.5": {
+      "integrity": "9c2ae90a5c3dc7771da5ae5e13b6f7d5d0b316c1954c5d53f2bfc1129fb757ff"
+    },
+    "@std/path@0.224.0": {
+      "integrity": "55bca6361e5a6d158b9380e82d4981d82d338ec587de02951e2b7c3a24910ee6",
+      "dependencies": [
+        "jsr:@std/assert"
+      ]
+    },
+    "@std/path@1.0.0-rc.2": {
+      "integrity": "39f20d37a44d1867abac8d91c169359ea6e942237a45a99ee1e091b32b921c7d"
+    },
+    "@std/streams@0.224.5": {
+      "integrity": "bcde7818dd5460d474cdbd674b15f6638b9cd73cd64e52bd852fba2bd4d8ec91"
+    }
+  },
+  "remote": {
+    "https://esm.sh/gh/marcopacini/ts_prometheus@v0.3.0/denonext/mod.ts.mjs": "3a2e38e83add647f9758c140a30b3ef84f326cbc00ef75ca6c2331c81415ae58",
+    "https://esm.sh/gh/marcopacini/ts_prometheus@v0.3.0/mod.ts": "2a754040ada85e5dc78e77c1c619cca9992be7d63a90994861aeaec49ed467f3",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.0&standalone/src/yt/solver/solvers.ts": "269a7e74a2f021621402fbee5872168564196151df892df8fb17229b593dd0b3",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.0/denonext/src/yt/solver/solvers.ts.bundle.mjs": "88c7e36c180c2f9416fd26ba9a7db344d8008a7f1069e5d7a91c0bdde44a5656",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.2&standalone/src/yt/solver/solvers.ts": "72a4211a3a6a3d0f0da77a32080d20743ebc90971aa7298fcc2b3eb099315157",
+    "https://esm.sh/gh/yt-dlp/ejs@0.3.2/denonext/src/yt/solver/solvers.ts.bundle.mjs": "f4d41475fd3dd459ab5f9bdaac55fffe57239a13554234a0ae3217949baad899"
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/cache@~0.2.1",
+      "jsr:@std/crypto@0.224",
+      "jsr:@std/fs@0.224",
+      "jsr:@std/http@0.224.5",
+      "jsr:@std/path@0.224"
+    ]
+  }
+}
