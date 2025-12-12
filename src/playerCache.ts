@@ -3,14 +3,15 @@ import { ensureDir } from "@std/fs";
 import { join } from "@std/path";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
 
-let cache_prefix = Deno.cwd();
+let cache_prefix: string;
 const HOME = Deno.env.get("HOME");
-if (HOME) {
-    cache_prefix = join(HOME, ".cache", "yt-cipher");
-}
 const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME");
 if (CACHE_HOME) {
     cache_prefix = join(CACHE_HOME, "yt-cipher");
+} else if (HOME) {
+    cache_prefix = join(HOME, ".cache", "yt-cipher");
+} else {
+    cache_prefix = Deno.cwd();
 }
 export const CACHE_DIR = join(cache_prefix, "player_cache");
 
