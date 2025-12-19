@@ -1,5 +1,3 @@
-import type { Input as MainInput, Output as MainOutput } from "../ejs/src/yt/solver/main.ts";
-
 export interface Solvers {
     n: ((val: string) => string) | null;
     sig: ((val: string) => string) | null;

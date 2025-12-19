@@ -1,13 +1,21 @@
-import { crypto } from "https://deno.land/std@0.224.0/crypto/mod.ts";
-import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
-import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { crypto } from "@std/crypto";
+import { ensureDir } from "@std/fs";
+import { join } from "@std/path";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
 import { extractPlayerId } from "./utils.ts";
 
 const ignorePlayerScriptRegion = Deno.env.get("IGNORE_SCRIPT_REGION") === "true";
 
-export const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME") || join(Deno.env.get("HOME"), '.cache');
-export const CACHE_DIR = join(CACHE_HOME, 'yt-cipher', 'player_cache');
+let cache_prefix = Deno.cwd();
+const HOME = Deno.env.get("HOME");
+if ( HOME ) {
+    cache_prefix = join(HOME, '.cache', 'yt-cipher');
+}
+const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME");
+if ( CACHE_HOME ) {
+    cache_prefix = join(CACHE_HOME, 'yt-cipher');
+}
+export const CACHE_DIR = join(cache_prefix, 'player_cache');
 
 export async function getPlayerFilePath(playerUrl: string): Promise<string> {
     let cacheKey: string;

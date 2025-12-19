@@ -39,19 +39,16 @@ docker compose up
 
 If you have Deno installed, you can run the service directly.
 
-Clone the repository and patch the `ejs` dependency:
+Clone the repository:
 
 ```bash
 git clone https://github.com/kikkia/yt-cipher.git
-cd yt-cipher
-git clone https://github.com/yt-dlp/ejs.git
-cd ejs
-git checkout 5d7bf090bb9a2a8f3e2dd13ded4a21a009224f87
-cd ..
-deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 ```
 
+Run the server:
+
 ```bash
+cd yt-cipher && \
 deno run --allow-net --allow-read --allow-write --allow-env server.ts
 ```
 NOTE: If using an `.env` file then also add the `--env` flag
