@@ -2,6 +2,9 @@ import { crypto } from "@std/crypto";
 import { ensureDir } from "@std/fs";
 import { join } from "@std/path";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
+import { extractPlayerId } from "./utils.ts";
+
+const ignorePlayerScriptRegion = Deno.env.get("IGNORE_SCRIPT_REGION") === "true";
 
 let cache_prefix: string;
 const HOME = Deno.env.get("HOME");
@@ -16,17 +19,23 @@ if (CACHE_HOME) {
 export const CACHE_DIR = join(cache_prefix, "player_cache");
 
 export async function getPlayerFilePath(playerUrl: string): Promise<string> {
-    // This hash of the player script url will mean that diff region scripts are treated as unequals, even for the same version #
-    // I dont think I have ever seen 2 scripts of the same version differ between regions but if they ever do this will catch it
-    // As far as player script access, I haven't ever heard about YT ratelimiting those either so ehh
-    const hashBuffer = await crypto.subtle.digest(
-        "SHA-256",
-        new TextEncoder().encode(playerUrl),
-    );
-    const hash = Array.from(new Uint8Array(hashBuffer)).map((b) =>
-        b.toString(16).padStart(2, "0")
-    ).join("");
-    const filePath = join(CACHE_DIR, `${hash}.js`);
+    let cacheKey: string;
+    if (ignorePlayerScriptRegion) {
+        // I have not seen any scripts that differ between regions so this should be safe
+        cacheKey = extractPlayerId(playerUrl);
+    } else {
+        // This hash of the player script url will mean that diff region scripts are treated as unequals, even for the same version #
+        // I dont think I have ever seen 2 scripts of the same version differ between regions but if they ever do this will catch it
+        // As far as player script access, I haven't ever heard about YT ratelimiting those either so ehh
+        const hashBuffer = await crypto.subtle.digest(
+            "SHA-256",
+            new TextEncoder().encode(playerUrl),
+        );
+        cacheKey = Array.from(new Uint8Array(hashBuffer)).map((b) =>
+            b.toString(16).padStart(2, "0")
+        ).join("");
+    }
+    const filePath = join(CACHE_DIR, `${cacheKey}.js`);
 
     try {
         const stat = await Deno.stat(filePath);
