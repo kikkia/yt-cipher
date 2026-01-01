@@ -1,3 +1,5 @@
+import { crypto } from "@std/crypto";
+
 const ALLOWED_HOSTNAMES = ["youtube.com", "www.youtube.com", "m.youtube.com"];
 
 export function validateAndNormalizePlayerUrl(playerUrl: string): string {
@@ -38,4 +40,18 @@ export function extractPlayerId(playerUrl: string): string {
         }
     }
     return "unknown";
+}
+
+export async function digestPlayerUrl(playerUrl: string): Promise<string> {
+    const hashBuffer = await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(playerUrl),
+    );
+    return Array.from(new Uint8Array(hashBuffer))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+}
+
+export function getTimestamp() {
+    return new Date().toISOString().slice(5, 19).replace("T", " ");
 }

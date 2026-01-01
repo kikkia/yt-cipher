@@ -8,6 +8,7 @@ import { withMetrics } from "./src/middleware.ts";
 import { withValidation } from "./src/validation.ts";
 import { registry } from "./src/metrics.ts";
 import type { ApiRequest, RequestContext } from "./src/types.ts";
+import { getTimestamp } from "./src/utils.ts";
 
 const API_TOKEN = Deno.env.get("API_TOKEN");
 
@@ -105,7 +106,6 @@ const host = Deno.env.get("HOST") || "0.0.0.0";
 await initializeCache();
 initializeWorkers();
 
-const ts = new Date().toISOString().slice(5, 19).replace("T", " ");
-console.log(`[${ts}] Server listening on http://${host}:${port}`);
+console.log(`[${getTimestamp()}] Server listening on http://${host}:${port}`);
 
 await serve(handler, { port: Number(port), hostname: host });

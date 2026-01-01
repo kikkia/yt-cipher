@@ -1,4 +1,5 @@
 import type { Task, WorkerWithStatus } from "./types.ts";
+import { getTimestamp } from "./utils.ts";
 
 const CONCURRENCY = parseInt(Deno.env.get("MAX_THREADS") || "", 10) ||
     navigator.hardwareConcurrency || 1;
@@ -51,6 +52,5 @@ export function initializeWorkers() {
         worker.isIdle = true;
         workers.push(worker);
     }
-    const ts = new Date().toISOString().slice(5, 19).replace("T", " ");
-    console.log(`[${ts}] Initialized ${CONCURRENCY} workers`);
+    console.log(`[${getTimestamp()}] Initialized ${CONCURRENCY} workers`);
 }
