@@ -51,5 +51,6 @@ export function initializeWorkers() {
         worker.isIdle = true;
         workers.push(worker);
     }
-    console.log(`Initialized ${CONCURRENCY} workers`);
+    const ts = new Date().toISOString().slice(5, 19).replace("T", " ");
+    console.log(`[${ts}] Initialized ${CONCURRENCY} workers`);
 }

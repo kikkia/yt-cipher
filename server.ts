@@ -105,5 +105,7 @@ const host = Deno.env.get("HOST") || "0.0.0.0";
 await initializeCache();
 initializeWorkers();
 
-console.log(`Server listening on http://${host}:${port}`);
+const ts = new Date().toISOString().slice(5, 19).replace("T", " ");
+console.log(`[${ts}] Server listening on http://${host}:${port}`);
+
 await serve(handler, { port: Number(port), hostname: host });
