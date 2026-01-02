@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+import { serve } from "@std/http";
 import { initializeWorkers } from "./src/workerPool.ts";
 import { initializeCache } from "./src/playerCache.ts";
 import { handleDecryptSignature } from "./src/handlers/decryptSignature.ts";
@@ -8,6 +8,7 @@ import { withMetrics } from "./src/middleware.ts";
 import { withValidation } from "./src/validation.ts";
 import { registry } from "./src/metrics.ts";
 import type { ApiRequest, RequestContext } from "./src/types.ts";
+import { getTimestamp } from "./src/utils.ts";
 
 const API_TOKEN = Deno.env.get("API_TOKEN");
 
@@ -28,7 +29,7 @@ async function baseHandler(req: Request): Promise<Response> {
                     {
                         status: 404,
                         headers: { "Content-Type": "text/plain" },
-                    }
+                    },
                 );
             }
         }
@@ -48,7 +49,7 @@ async function baseHandler(req: Request): Promise<Response> {
         }
     }
 
-    if (pathname === '/metrics') {
+    if (pathname === "/metrics") {
         return new Response(registry.metrics(), {
             headers: { "Content-Type": "text/plain" },
         });
@@ -57,28 +58,39 @@ async function baseHandler(req: Request): Promise<Response> {
     const authHeader = req.headers.get("authorization");
     if (API_TOKEN && API_TOKEN !== "") {
         if (authHeader !== API_TOKEN) {
-            const error = authHeader ? 'Invalid API token' : 'Missing API token';
-            return new Response(JSON.stringify({ error }), { status: 401, headers: { "Content-Type": "application/json" } });
+            const error = authHeader
+                ? "Invalid API token"
+                : "Missing API token";
+            return new Response(JSON.stringify({ error }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
         }
     }
 
     let handle: (ctx: RequestContext) => Promise<Response>;
 
-    if (pathname === '/decrypt_signature') {
+    if (pathname === "/decrypt_signature") {
         handle = handleDecryptSignature;
-    } else if (pathname === '/get_sts') {
+    } else if (pathname === "/get_sts") {
         handle = handleGetSts;
-    } else if (pathname === '/resolve_url') {
+    } else if (pathname === "/resolve_url") {
         handle = handleResolveUrl;
     } else {
-        return new Response(JSON.stringify({ error: 'Not Found' }), { status: 404, headers: { "Content-Type": "application/json" } });
+        return new Response(JSON.stringify({ error: "Not Found" }), {
+            status: 404,
+            headers: { "Content-Type": "application/json" },
+        });
     }
 
     let body;
     try {
         body = await req.json() as ApiRequest;
     } catch {
-        return new Response(JSON.stringify({ error: 'Invalid JSON body' }), { status: 400, headers: { "Content-Type": "application/json" } });
+        return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+        });
     }
     const ctx: RequestContext = { req, body };
 
@@ -88,11 +100,12 @@ async function baseHandler(req: Request): Promise<Response> {
 
 const handler = baseHandler;
 
-const port = Deno.env.get("PORT") || 8001;
-const host = Deno.env.get("HOST") || '0.0.0.0';
+const port = Deno.env.get("PORT") || "8001";
+const host = Deno.env.get("HOST") || "0.0.0.0";
 
 await initializeCache();
 initializeWorkers();
 
-console.log(`Server listening on http://${host}:${port}`);
+console.log(`[${getTimestamp()}] Server listening on http://${host}:${port}`);
+
 await serve(handler, { port: Number(port), hostname: host });

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": [ "deno.worker" ]
+  },
+  "fmt": {
+    "include": ["src/", "*.ts"],
+    "indentWidth": 4
+  },
+  "imports": {
+    "@std/cache": "jsr:@std/cache@^0.2.1",
+    "@std/crypto": "jsr:@std/crypto@^0.224.0",
+    "@std/fs": "jsr:@std/fs@^0.224.0",
+    "@std/http": "jsr:@std/http@0.224.5",
+    "@std/path": "jsr:@std/path@^0.224.0",
+    "ejs/": "https://esm.sh/gh/yt-dlp/ejs@0.3.2&standalone/",
+    "ts_prometheus/": "https://esm.sh/gh/marcopacini/ts_prometheus@v0.3.0/"
+  },
+  "lint": {
+    "include": ["src/", "*.ts"]
+  }
+}
