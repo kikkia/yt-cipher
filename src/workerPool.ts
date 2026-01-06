@@ -1,6 +1,6 @@
 import type { InFlight, Task, WorkerWithLimit } from "./types.ts";
 import { createTaskQueue } from "./taskQueueDeque.ts";
-import { safeCall } from "./utils.ts";
+import { normalizeError, safeCall } from "./utils.ts";
 
 const CONCURRENCY = parseInt(Deno.env.get("MAX_THREADS") || "", 10) || navigator.hardwareConcurrency || 1;
 
@@ -8,7 +8,7 @@ const CONCURRENCY = parseInt(Deno.env.get("MAX_THREADS") || "", 10) || navigator
 // (Optional env override for testing/tuning.)
 const parsedMessagesLimit = parseInt(Deno.env.get("MESSAGES_LIMIT") || "", 10);
 const MESSAGES_LIMIT = Number.isFinite(parsedMessagesLimit) && parsedMessagesLimit > 0
-    ? parsedMessagesLimit
+    ? Math.max(10, Math.floor(parsedMessagesLimit))
     : 10_000;
 
 const workers: WorkerWithLimit[] = [];
@@ -345,6 +345,48 @@ function attachPermanentHandlers(worker: WorkerWithLimit) {
     });
 }
 
+function createWorker(): WorkerWithLimit {
+    const url = new URL("../worker.ts", import.meta.url);
+    const worker = new Worker(url.href, { type: "module" }) as WorkerWithLimit;
+
+    if (!Object.isExtensible(worker)) {
+        safeCall(worker.terminate.bind(worker), {
+            label: "worker.terminate(createWorker)",
+            log: true,
+        });
+        throw new Error("Worker instance is not extensible; cannot attach pool metadata");
+    }
+
+    try {
+        // Set and lock the limit
+        Object.defineProperty(worker, "messagesLimit", {
+            value: MESSAGES_LIMIT,
+            configurable: false,
+            writable: false,
+            enumerable: true,
+        });
+
+        // Mutable, but not removable/re-definable pool metadata.
+        Object.defineProperty(worker, "messagesRemaining", {
+            value: MESSAGES_LIMIT,
+            configurable: false,
+            writable: true,
+            enumerable: true,
+        });
+
+        // handlers are available for use immediately
+        attachPermanentHandlers(worker);
+    } catch (e) {
+        safeCall(worker.terminate.bind(worker), {
+            label: "worker.terminate(createWorker)",
+            log: true,
+        });
+        throw normalizeError(e);
+    }
+
+    return worker;
+}
+
 function takeIdleWorker(): WorkerWithLimit | undefined {
     while (idleWorkerStack.length > 0) {
         const w = idleWorkerStack.pop()!;
@@ -426,15 +468,9 @@ export function execInPool(data: string): Promise<string> {
     });
 }
 
-function fillWorkers(messagesLimit: number = MESSAGES_LIMIT) {
+function fillWorkers() {
     while (workers.length < CONCURRENCY) {
-        let worker: WorkerWithLimit;
-        worker = new Worker(new URL("../worker.ts", import.meta.url).href, { type: "module" }) as WorkerWithLimit;
-
-        worker.messagesLimit = messagesLimit;
-        worker.messagesRemaining = messagesLimit;
-
-        attachPermanentHandlers(worker);
+        const worker = createWorker();
 
         workers.push(worker);
         setIdle(worker);

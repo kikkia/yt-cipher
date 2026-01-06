@@ -103,3 +103,32 @@ export function safeCall(fn: unknown, ...args: unknown[]): unknown {
         return undefined;
     }
 }
+
+export function normalizeError(err: unknown, message?: string): Error {
+    if (err instanceof Error) {
+        return message ? new Error(message, { cause: err }) : err;
+    }
+
+    let derived: string;
+    if (message !== undefined) {
+        derived = message;
+    } else if (typeof err === "string") {
+        derived = err;
+    } else if (err && typeof err === "object") {
+        const maybeMessage = (err as { message?: unknown }).message;
+        if (typeof maybeMessage === "string" && maybeMessage.length > 0) {
+            derived = maybeMessage;
+        } else {
+            try {
+                derived = JSON.stringify(err);
+            } catch {
+                derived = String(err);
+            }
+        }
+    } else {
+        derived = String(err);
+    }
+
+    // Preserve the original thrown value for debugging.
+    return new Error(derived, { cause: err });
+}
