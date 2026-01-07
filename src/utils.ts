@@ -66,7 +66,7 @@ function looksLikeSafeCallOptions(v: unknown): v is SafeCallOptions {
  * - Typical usage: safeCall(task.resolve, data)
  * - If you need to preserve a specific receiver: safeCall.call(obj, obj.method, arg)
  */
-export function safeCall(fn: unknown, ...args: unknown[]): unknown {
+export function safeCall(this:unknown, fn: unknown, ...args: unknown[]): unknown {
     if (typeof fn !== "function") return undefined;
 
     let options: SafeCallOptions | undefined;
