@@ -63,10 +63,11 @@ Selects which deque implementation backs the internal task queue (used by the wo
 
 - Type: string
 - Default: `alg`
-- Allowed: `alg`, `korkje`
+- Allowed: `alg`, `korkje`, `native`
 - Behavior:
   - `alg`: uses `jsr:@alg/deque`
   - `korkje`: uses `jsr:@korkje/deque`
+  - `native`: uses a head-indexed Array (with O(N) unshift behavior)
 
 ### `MAX_THREADS`
 Controls the maximum number of workers used by the pool (used by [`src/workerPool.ts`](./workerPool.ts))

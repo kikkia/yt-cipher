@@ -48,12 +48,26 @@ export interface Task {
 }
 
 export interface TaskQueue<T> {
-    /** Match Array#push(...) usage */
-    push(item: T): number;
-    /** Match Array#shift() usage */
-    shift(): T | undefined;
     /** Match Array#length usage */
     readonly length: number;
+
+    /** Match Array#push(...items) usage */
+    push(...items: T[]): number;
+
+    /** Match Array#pop() usage */
+    pop(): T | undefined;
+
+    /** Match Array#shift() usage */
+    shift(): T | undefined;
+
+    /** Match Array#unshift(...items) usage */
+    unshift(...items: T[]): number;
+
+    /** Convenience boolean; should be implemented as `0 === this.length` */
+    readonly empty: boolean;
+
+    /** Match "clear the queue" semantics */
+    clear(): void;
 }
 
 export type InFlight = { task: Task; timeoutId: number };
