@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y git
 
 RUN git clone https://github.com/yt-dlp/ejs.git
 # Pin to a specific commit
-RUN cd ejs && git checkout 2655b1f55f98e5870d4e124704a21f4d793b4e1c && cd ..
+RUN cd ejs && git checkout e91d03f58a9791da2300c5f10a2955af1c5d6d87 && cd ..
 
 COPY scripts/patch-ejs.ts ./scripts/patch-ejs.ts
 RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
