@@ -36,8 +36,9 @@ export interface ResolveUrlResponse {
     resolved_url: string;
 }
 
-export interface WorkerWithStatus extends Worker {
-    isIdle?: boolean;
+export interface WorkerWithLimit extends Worker {
+    messagesRemaining: number;
+    messagesLimit: number;
 }
 
 export interface Task {
@@ -45,6 +46,46 @@ export interface Task {
     resolve: (output: string) => void;
     reject: (error: any) => void;
 }
+
+export interface TaskQueue<T> {
+    /** Match Array#length usage */
+    readonly length: number;
+
+    /** Match Array#push(...items) usage */
+    push(...items: T[]): number;
+
+    /** Match Array#pop() usage */
+    pop(): T | undefined;
+
+    /** Match Array#shift() usage */
+    shift(): T | undefined;
+
+    /** Match Array#unshift(...items) usage */
+    unshift(...items: T[]): number;
+
+    /** Convenience boolean; should be implemented as `0 === this.length` */
+    readonly empty: boolean;
+
+    /** Match "clear the queue" semantics */
+    clear(): void;
+}
+
+export type InFlight = { task: Task; timeoutId: number };
+
+export type SafeCallOptions = {
+    /**
+     * Optional label used when logging errors.
+     */
+    label?: string;
+    /**
+     * If `true`, logs to console.error. If a function, called with (label, err).
+     */
+    log?: boolean | ((label: string, err: unknown) => void);
+    /**
+     * Optional callback invoked when the call throws.
+     */
+    onError?: (err: unknown) => void;
+};
 
 export type ApiRequest = SignatureRequest | StsRequest | ResolveUrlRequest;
 
