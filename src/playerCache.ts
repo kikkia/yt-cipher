@@ -6,8 +6,31 @@ import { extractPlayerId } from "./utils.ts";
 
 const ignorePlayerScriptRegion = Deno.env.get("IGNORE_SCRIPT_REGION") === "true";
 
-export const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME") || join(Deno.env.get("HOME"), '.cache');
-export const CACHE_DIR = join(CACHE_HOME, 'yt-cipher', 'player_cache');
+function getCacheHome(): string {
+  // XDG standard (Linux, optional on others)
+  const xdg = Deno.env.get("XDG_CACHE_HOME");
+  if (xdg) return xdg;
+
+  // Windows
+  if (Deno.build.os === "windows") {
+    const localAppData = Deno.env.get("LOCALAPPDATA");
+    if (localAppData) return join(localAppData, "cache");
+  }
+
+  // macOS / Linux fallback
+  const home = Deno.env.get("HOME") ?? Deno.env.get("USERPROFILE");
+  if (home) return join(home, ".cache");
+
+  throw new Error("Unable to determine cache directory");
+}
+
+export const CACHE_HOME = getCacheHome();
+export const CACHE_DIR = join(CACHE_HOME, "yt-cipher", "player_cache");
+
+// This is used for better logging
+function timestamp() {
+    return new Date().toISOString().slice(5, 19).replace("T", " ");
+}
 
 export async function getPlayerFilePath(playerUrl: string): Promise<string> {
     let cacheKey: string;
@@ -30,7 +53,7 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
         return filePath;
     } catch (error) {
         if (error instanceof Deno.errors.NotFound) {
-            console.log(`Cache miss for player: ${playerUrl}. Fetching...`);
+            console.log(`[${timestamp()}] Cache miss for player: ${playerUrl}. Fetching...`);
             const response = await fetch(playerUrl);
             playerScriptFetches.labels({ player_url: playerUrl, status: response.statusText }).inc();
             if (!response.ok) {
@@ -46,7 +69,7 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
             }
             cacheSize.labels({ cache_name: 'player' }).set(fileCount);
             
-            console.log(`Saved player to cache: ${filePath}`);
+            console.log(`[${timestamp()}] Saved player to cache: ${filePath}`);
             return filePath;
         }
         throw error;
@@ -59,14 +82,14 @@ export async function initializeCache() {
     // Since these accumulate over time just cleanout 14 day unused ones
     let fileCount = 0;
     const thirtyDays = 14 * 24 * 60 * 60 * 1000;
-    console.log(`Cleaning up player cache directory: ${CACHE_DIR}`);
+    console.log(`[${timestamp()}] Cleaning up player cache directory: ${CACHE_DIR}`);
     for await (const dirEntry of Deno.readDir(CACHE_DIR)) {
         if (dirEntry.isFile) {
             const filePath = join(CACHE_DIR, dirEntry.name);
             const stat = await Deno.stat(filePath);
             const lastAccessed = stat.atime?.getTime() ?? stat.mtime?.getTime() ?? stat.birthtime?.getTime();
             if (lastAccessed && (Date.now() - lastAccessed > thirtyDays)) {
-                console.log(`Deleting stale player cache file: ${filePath}`);
+                console.log(`[${timestamp()}] Deleting stale player cache file: ${filePath}`);
                 await Deno.remove(filePath);
             } else {
                 fileCount++;
@@ -74,5 +97,5 @@ export async function initializeCache() {
         }
     }
     cacheSize.labels({ cache_name: 'player' }).set(fileCount);
-    console.log(`Player cache directory ensured at: ${CACHE_DIR}`);
+    console.log(`[${timestamp()}] Player cache directory ensured at: ${CACHE_DIR}`);
 }

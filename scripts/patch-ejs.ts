@@ -3,6 +3,10 @@ import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const EJS_SRC_DIR = join(Deno.cwd(), "ejs/src");
 
+function timestamp() {
+    return new Date().toISOString().slice(5, 19).replace("T", " ");
+}
+
 async function patchFile(path: string) {
     let content = await Deno.readTextFile(path);
     let changed = false;
@@ -21,16 +25,14 @@ async function patchFile(path: string) {
 
     if (changed) {
         await Deno.writeTextFile(path, content);
-        console.log(`Patched ${path}`);
+        console.log(`[${timestamp()}] Patched ${path}`);
     }
 }
-
-console.log(`Starting to patch files in ${EJS_SRC_DIR}...`);
+console.log(`[${timestamp()}] Starting to patch files in ${EJS_SRC_DIR}...`);
 
 for await (const entry of walk(EJS_SRC_DIR, { exts: [".ts"] })) {
     if (entry.isFile) {
         await patchFile(entry.path);
     }
 }
-
-console.log("Patching complete.");
+console.log(`[${timestamp()}] Patching complete.`);
