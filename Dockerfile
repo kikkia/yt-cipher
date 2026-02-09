@@ -4,9 +4,9 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y git
 
-RUN git clone https://github.com/Grub4K/ejs.git
+RUN git clone https://github.com/yt-dlp/ejs.git
 # Pin to a specific commit
-RUN cd ejs && git checkout 124d6d81a502104c3a5ed642e24003d025b2a8ef && cd ..
+RUN cd ejs && git checkout d13ca534013845c9a8e9c8dadd2ddcd5cb540c1c && cd ..
 
 COPY scripts/patch-ejs.ts ./scripts/patch-ejs.ts
 RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
