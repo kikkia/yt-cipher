@@ -6,7 +6,30 @@ import { extractPlayerId } from "./utils.ts";
 
 const ignorePlayerScriptRegion = Deno.env.get("IGNORE_SCRIPT_REGION") === "true";
 
-export const CACHE_HOME = Deno.env.get("XDG_CACHE_HOME") || join(Deno.env.get("HOME"), '.cache');
+function resolveCacheHome(): string {
+    const xdgCacheHome = Deno.env.get("XDG_CACHE_HOME");
+    if (xdgCacheHome) return xdgCacheHome;
+
+    const localAppData = Deno.env.get("LOCALAPPDATA");
+    if (localAppData) return localAppData;
+
+    const home =
+        Deno.env.get("HOME") ??
+        Deno.env.get("USERPROFILE") ??
+        (() => {
+            const homeDrive = Deno.env.get("HOMEDRIVE");
+            const homePath = Deno.env.get("HOMEPATH");
+            if (homeDrive && homePath) return `${homeDrive}${homePath}`;
+            return undefined;
+        })();
+
+    if (home) return join(home, ".cache");
+
+    // last resort
+    return join(Deno.cwd(), ".cache");
+}
+
+export const CACHE_HOME = resolveCacheHome();
 export const CACHE_DIR = join(CACHE_HOME, 'yt-cipher', 'player_cache');
 
 export async function getPlayerFilePath(playerUrl: string): Promise<string> {

@@ -4,9 +4,13 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y git
 
-RUN git clone https://github.com/yt-dlp/ejs.git
-# Pin to a specific commit
-RUN cd ejs && git checkout d13ca534013845c9a8e9c8dadd2ddcd5cb540c1c && cd ..
+ARG EJS_COMMIT=1b648c34c134c3adf599416457ee307f059ad016
+RUN git init ejs && \
+    cd ejs && \
+    git remote add origin https://github.com/yt-dlp/ejs.git && \
+    git fetch --depth 1 origin "$EJS_COMMIT" && \
+    git checkout --detach FETCH_HEAD && \
+    cd ..
 
 COPY scripts/patch-ejs.ts ./scripts/patch-ejs.ts
 RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
