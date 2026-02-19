@@ -35,6 +35,18 @@ cd yt-cipher
 docker compose up
 ```
 
+To pull the latest image and restart the stack after updates:
+
+Linux/macOS:
+```bash
+./scripts/update-compose.sh
+```
+
+Windows (PowerShell):
+```powershell
+.\scripts\update-compose.ps1
+```
+
 ### Deno
 
 If you have Deno installed, you can run the service directly.
