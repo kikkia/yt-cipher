@@ -18,6 +18,7 @@ export function withMetrics(handler: Next): Next {
         try {
             response = await handler(ctx);
         } catch (e) {
+            console.error("Caught error in middleware:", e);
             const message = e instanceof Error ? e.message : String(e);
             response = new Response(JSON.stringify({ error: message }), { status: 500, headers: { "Content-Type": "application/json" } });
         }

@@ -7,6 +7,7 @@ export async function handleDecryptSignature(ctx: RequestContext): Promise<Respo
     const solvers = await getSolvers(player_url);
 
     if (!solvers) {
+        console.error("Failed to generate solvers from player script for player: " + player_url);
         return new Response(JSON.stringify({ error: "Failed to generate solvers from player script" }), { status: 500, headers: { "Content-Type": "application/json" } });
     }
 

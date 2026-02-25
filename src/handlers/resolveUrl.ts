@@ -7,6 +7,7 @@ export async function handleResolveUrl(ctx: RequestContext): Promise<Response> {
     const solvers = await getSolvers(player_url);
 
     if (!solvers) {
+        console.error("Failed to generate solvers from player script for player: " + player_url);
         return new Response(JSON.stringify({ error: "Failed to generate solvers from player script" }), { status: 500, headers: { "Content-Type": "application/json" } });
     }
 
@@ -14,6 +15,7 @@ export async function handleResolveUrl(ctx: RequestContext): Promise<Response> {
 
     if (encrypted_signature) {
         if (!solvers.sig) {
+            console.error("No signature solver found for this player: " + player_url);
             return new Response(JSON.stringify({ error: "No signature solver found for this player" }), { status: 500, headers: { "Content-Type": "application/json" } });
         }
         const decryptedSig = solvers.sig(encrypted_signature);
