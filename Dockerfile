@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y git
 
-ARG EJS_COMMIT=1b648c34c134c3adf599416457ee307f059ad016
+ARG EJS_COMMIT=5bc9811c7a2f64a88279d2b90884df2160e51b34
 RUN git init ejs && \
     cd ejs && \
     git remote add origin https://github.com/yt-dlp/ejs.git && \
