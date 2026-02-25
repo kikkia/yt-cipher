@@ -13,28 +13,28 @@ const httpBuckets = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10];
 export const endpointHits = Counter.with({
     name: "http_requests_total",
     help: "Total number of HTTP requests.",
-    labels: ["method", "pathname", "player_id", "plugin_version", "user_agent"],
+    labels: ["method", "pathname", "player_id", "player_type", "plugin_version", "user_agent"],
     registry: [registry],
 });
 
 export const responseCodes = Counter.with({
     name: "http_responses_total",
     help: "Total number of HTTP responses.",
-    labels: ["method", "pathname", "status", "player_id", "plugin_version", "user_agent"],
+    labels: ["method", "pathname", "status", "player_id", "player_type", "plugin_version", "user_agent"],
     registry: [registry],
 });
 
 export const workerErrors = Counter.with({
     name: "worker_errors_total",
     help: "Total number of worker errors.",
-    labels: ["player_id", "message"],
+    labels: ["player_id", "player_type", "message"],
     registry: [registry],
 });
 
 export const endpointLatency = Histogram.with({
     name: "http_request_duration_seconds",
     help: "HTTP request duration in seconds.",
-    labels: ["method", "pathname", "player_id", "cached"],
+    labels: ["method", "pathname", "player_id", "player_type", "cached"],
     buckets: httpBuckets,
     registry: [registry],
 });
@@ -49,7 +49,7 @@ export const cacheSize = Gauge.with({
 export const playerUrlRequests = Counter.with({
     name: "player_url_requests_total",
     help: "Total number of requests for each player ID.",
-    labels: ["player_id"],
+    labels: ["player_id", "player_type"],
     registry: [registry],
 });
 

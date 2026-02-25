@@ -39,3 +39,30 @@ export function extractPlayerId(playerUrl: string): string {
     }
     return 'unknown';
 }
+export function extractPlayerType(playerUrl: string): string {
+    try {
+        const path = playerUrl.startsWith('https') ? new URL(playerUrl).pathname : playerUrl;
+        const pathParts = path.split('/');
+        const vflsetPart = pathParts.find(p => p.includes('.vflset'));
+
+        if (vflsetPart) {
+            const typePart = vflsetPart.split('.vflset')[0];
+            if (typePart.startsWith('player_')) {
+                return typePart.substring('player_'.length);
+            }
+            if (typePart.startsWith('tv-player-')) {
+                return typePart.substring('tv-player-'.length);
+            }
+            if (typePart.startsWith('player-')) {
+                return typePart.substring('player-'.length);
+            }
+            return typePart;
+        }
+    } catch (e) {
+        // URL parsing failed or other error.
+    }
+
+    // I havent seen any non vflset types, but this fallback will show them.
+    const pathSegments = playerUrl.split('/');
+    return pathSegments.find(p => p.includes('player')) ?? 'unknown';
+}
