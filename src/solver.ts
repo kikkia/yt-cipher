@@ -8,13 +8,8 @@ import { workerErrors } from "./metrics.ts";
 import { extractPlayerId, extractPlayerType } from "./utils.ts";
 
 export async function getSolvers(player_url: string): Promise<Solvers | null> {
-    const playerId = extractPlayerId(player_url);
-    // TEMP HACK: change this script to parseable ones
-    if (playerId === "4e51e895") {
-        player_url = player_url.replace("player_ias", "player_es6");
-        player_url = player_url.replace("player_tcc", "player_es6");
-        player_url = player_url.replace("player_es5", "player_es6");
-    } 
+    // TEMP HACK TILL NEXT EJS
+    player_url = "https://www.youtube.com/s/player/140dafda/player_ias.vflset/ja_JP/base.js"
     const playerCacheKey = await getPlayerFilePath(player_url);
 
     let solvers = solverCache.get(playerCacheKey);
