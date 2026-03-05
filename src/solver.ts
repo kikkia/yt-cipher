@@ -10,6 +10,7 @@ import { extractPlayerId, extractPlayerType } from "./utils.ts";
 export async function getSolvers(player_url: string): Promise<Solvers | null> {
     // TEMP HACK TILL NEXT EJS
     player_url = "https://www.youtube.com/s/player/140dafda/player_ias.vflset/ja_JP/base.js"
+    
     const playerCacheKey = await getPlayerFilePath(player_url);
 
     let solvers = solverCache.get(playerCacheKey);

@@ -3,7 +3,9 @@ import type { RequestContext, StsRequest, StsResponse } from "../types.ts";
 import { stsCache } from "../stsCache.ts";
 
 export async function handleGetSts(ctx: RequestContext): Promise<Response> {
-    const { player_url } = ctx.body as StsRequest;
+    let { player_url } = ctx.body as StsRequest;
+    // TEMP HACK: till new scripts are parsable
+    player_url = "https://www.youtube.com/s/player/140dafda/player_ias.vflset/ja_JP/base.js"
     const playerFilePath = await getPlayerFilePath(player_url);
 
     const cachedSts = stsCache.get(playerFilePath);
