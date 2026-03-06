@@ -1,10 +1,10 @@
 services:
   ejs-api:
     # Uncomment to build locally
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    image: ghcr.io/kikkia/yt-cipher:master
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # image: ghcr.io/kikkia/yt-cipher:master
     container_name: ejs_signature_api
     ports:
       - "8001:8001"

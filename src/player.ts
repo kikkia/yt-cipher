@@ -9,16 +9,35 @@ export enum PlayerVariant {
     PHONE = 'PHONE',
 }
 
-const playerVariantDetails: Record<PlayerVariant, string> = {
-    [PlayerVariant.IAS]: 'player_ias.vflset/en_US/base.js',
-    [PlayerVariant.IAS_TCC]: 'player_ias_tcc.vflset/en_US/base.js',
-    [PlayerVariant.IAS_TCE]: 'player_ias_tce.vflset/en_US/base.js',
-    [PlayerVariant.ES5]: 'player_es5.vflset/en_US/base.js',
-    [PlayerVariant.ES6]: 'player_es6.vflset/en_US/base.js',
-    [PlayerVariant.TV]: 'tv-player-ias.vflset/tv-player-ias.js',
-    [PlayerVariant.TV_ES6]: 'tv-player-es6.vflset/tv-player-es6.js',
-    [PlayerVariant.PHONE]: 'player-plasma-ias-phone-en_US.vflset/base.js',
-};
+class VariantDetail {
+    constructor(
+        public readonly variant: PlayerVariant,
+        private readonly matchRegex: RegExp,
+        private readonly buildTemplate: (region: string) => string,
+    ) {}
+
+    match(path: string): { region: string | null } | null {
+        const result = path.match(this.matchRegex);
+        if (!result) return null;
+        // The region is in the first capture group, or null if it's a region-less variant
+        return { region: result[1] || null };
+    }
+
+    build(region: string | null): string {
+        return this.buildTemplate(region ?? 'en_US');
+    }
+}
+
+const playerVariantDetails: VariantDetail[] = [
+    new VariantDetail(PlayerVariant.IAS, /^player_ias\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_ias.vflset/${region}/base.js`),
+    new VariantDetail(PlayerVariant.IAS_TCC, /^player_ias_tcc\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_ias_tcc.vflset/${region}/base.js`),
+    new VariantDetail(PlayerVariant.IAS_TCE, /^player_ias_tce\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_ias_tce.vflset/${region}/base.js`),
+    new VariantDetail(PlayerVariant.ES5, /^player_es5\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_es5.vflset/${region}/base.js`),
+    new VariantDetail(PlayerVariant.ES6, /^player_es6\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_es6.vflset/${region}/base.js`),
+    new VariantDetail(PlayerVariant.PHONE, /^player-plasma-ias-phone-([a-zA-Z_]+)\.vflset\/base\.js$/, (region) => `player-plasma-ias-phone-${region}.vflset/base.js`),
+    new VariantDetail(PlayerVariant.TV, /^tv-player-ias\.vflset\/tv-player-ias\.js$/, () => `tv-player-ias.vflset/tv-player-ias.js`),
+    new VariantDetail(PlayerVariant.TV_ES6, /^tv-player-es6\.vflset\/tv-player-es6\.js$/, () => `tv-player-es6.vflset/tv-player-es6.js`),
+];
 
 const overridePlayerId = Deno.env.get('OVERRIDE_PLAYER_ID');
 // const overridePlayerVariant = Deno.env.get('OVERRIDE_PLAYER_VARIANT');
@@ -27,7 +46,11 @@ const overridePlayerVariant = 'IAS';
 
 
 export class PlayerScript {
-    constructor(public readonly id: string, public readonly variant: PlayerVariant) {
+    constructor(
+        public readonly id: string,
+        public readonly variant: PlayerVariant,
+        public readonly region: string | null,
+    ) {
         if (id.length !== 8) {
             throw new Error(`Invalid player ID: ${id}. Must be 8 characters long.`);
         }
@@ -45,9 +68,10 @@ export class PlayerScript {
         const id = pathParts[playerIndex + 1];
         const variantPath = pathParts.slice(playerIndex + 2).join('/');
 
-        for (const [variant, detailPath] of Object.entries(playerVariantDetails)) {
-            if (detailPath === variantPath) {
-                return new PlayerScript(id, variant as PlayerVariant);
+        for (const detail of playerVariantDetails) {
+            const result = detail.match(variantPath);
+            if (result) {
+                return new PlayerScript(id, detail.variant, result.region);
             }
         }
 
@@ -55,16 +79,20 @@ export class PlayerScript {
     }
 
     toUrl(): string {
-        const variantPath = playerVariantDetails[this.variant];
+        const detail = playerVariantDetails.find(d => d.variant === this.variant);
+        if (!detail) {
+            throw new Error(`Cannot build URL for unknown variant: ${this.variant}`);
+        }
+        const variantPath = detail.build(this.region);
         return `https://www.youtube.com/s/player/${this.id}/${variantPath}`;
     }
 
     withVariant(variant: PlayerVariant): PlayerScript {
-        return new PlayerScript(this.id, variant);
+        return new PlayerScript(this.id, variant, this.region);
     }
 
     withId(id: string): PlayerScript {
-        return new PlayerScript(id, this.variant);
+        return new PlayerScript(id, this.variant, this.region);
     }
 }
 
