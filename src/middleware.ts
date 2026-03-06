@@ -1,4 +1,3 @@
-import { extractPlayerId, extractPlayerType } from "./utils.ts";
 import { endpointHits, responseCodes, endpointLatency } from "./metrics.ts";
 import type { RequestContext } from "./types.ts";
 
@@ -7,8 +6,8 @@ type Next = (ctx: RequestContext) => Promise<Response>;
 export function withMetrics(handler: Next): Next {
     return async (ctx: RequestContext) => {
         const { pathname } = new URL(ctx.req.url);
-        const playerId = extractPlayerId(ctx.body.player_url);
-        const playerType = extractPlayerType(ctx.body.player_url);
+        const playerId = ctx.playerScript?.id ?? "unknown";
+        const playerType = ctx.playerScript?.variant ?? "unknown";
         const pluginVersion = ctx.req.headers.get("Plugin-Version") ?? "unknown";
         const userAgent = ctx.req.headers.get("User-Agent") ?? "unknown";
 

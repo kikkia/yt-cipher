@@ -50,7 +50,10 @@ export type ApiRequest = SignatureRequest | StsRequest | ResolveUrlRequest;
 
 // Parsing into this context helps avoid multi copies of requests
 // since request body can only be read once. 
+import { PlayerScript } from "./player.ts";
+
 export interface RequestContext {
     req: Request;
     body: ApiRequest;
+    playerScript?: PlayerScript;
 }

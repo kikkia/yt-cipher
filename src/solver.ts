@@ -5,13 +5,10 @@ import { solverCache } from "./solverCache.ts";
 import { getFromPrepared } from "../ejs/src/yt/solver/solvers.ts";
 import type { Solvers } from "./types.ts";
 import { workerErrors } from "./metrics.ts";
-import { extractPlayerId, extractPlayerType } from "./utils.ts";
+import { PlayerScript } from "./player.ts";
 
-export async function getSolvers(player_url: string): Promise<Solvers | null> {
-    // TEMP HACK TILL NEXT EJS
-    player_url = "https://www.youtube.com/s/player/140dafda/player_ias.vflset/ja_JP/base.js"
-    
-    const playerCacheKey = await getPlayerFilePath(player_url);
+export async function getSolvers(playerScript: PlayerScript): Promise<Solvers | null> {
+    const playerCacheKey = await getPlayerFilePath(playerScript);
 
     let solvers = solverCache.get(playerCacheKey);
 
@@ -25,10 +22,8 @@ export async function getSolvers(player_url: string): Promise<Solvers | null> {
         try {
             preprocessedPlayer = await execInPool(rawPlayer);
         } catch (e) {
-            const playerId = extractPlayerId(player_url);
             const message = e instanceof Error ? e.message : String(e);
-            const playerType = extractPlayerType(player_url);
-            workerErrors.labels({ player_id: playerId, player_type: playerType, message }).inc();
+            workerErrors.labels({ player_id: playerScript.id, player_type: playerScript.variant, message }).inc();
             throw e;
         }
         preprocessedCache.set(playerCacheKey, preprocessedPlayer);
