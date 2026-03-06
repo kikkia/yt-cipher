@@ -4,10 +4,19 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y git
 
-ARG EJS_COMMIT=5bc9811c7a2f64a88279d2b90884df2160e51b34
+# ARG EJS_COMMIT=5bc9811c7a2f64a88279d2b90884df2160e51b34
+# RUN git init ejs && \
+#     cd ejs && \
+#     git remote add origin https://github.com/yt-dlp/ejs.git && \
+#     git fetch --depth 1 origin "$EJS_COMMIT" && \
+#     git checkout --detach FETCH_HEAD && \
+#     cd ..
+
+# Temp use a new IAS fixed sig extractor
+ARG EJS_COMMIT=aa11ae693e4fdc32d4dc17d9a80c6fb1eeb35e19
 RUN git init ejs && \
     cd ejs && \
-    git remote add origin https://github.com/yt-dlp/ejs.git && \
+    git remote add origin https://github.com/kikkia/ejs.git && \
     git fetch --depth 1 origin "$EJS_COMMIT" && \
     git checkout --detach FETCH_HEAD && \
     cd ..
