@@ -83,7 +83,7 @@ async function baseHandler(req: Request): Promise<Response> {
     }
     const ctx: RequestContext = { req, body };
 
-    const composedHandler = withValidation(withMetrics(withPlayer(handle)));
+    const composedHandler = withValidation(withPlayer(withMetrics(handle)));
     return await composedHandler(ctx);
 }
 
