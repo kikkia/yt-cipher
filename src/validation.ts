@@ -1,5 +1,4 @@
 import type { ApiRequest, RequestContext } from "./types.ts";
-import { validateAndNormalizePlayerUrl } from "./utils.ts";
 
 type Next = (ctx: RequestContext) => Promise<Response>;
 type ValidationSchema = {
@@ -55,17 +54,6 @@ export function withValidation(handler: Next): Next {
             });
         }
         
-        try {
-            const normalizedUrl = validateAndNormalizePlayerUrl(body.player_url);
-            // mutate the context with the normalized URL
-            ctx.body.player_url = normalizedUrl;
-        } catch (e) {
-            return new Response(JSON.stringify({ error: (e as Error).message }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" },
-            });
-        }
-
         return handler(ctx);
     };
 }

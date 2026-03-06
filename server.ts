@@ -5,6 +5,7 @@ import { handleDecryptSignature } from "./src/handlers/decryptSignature.ts";
 import { handleGetSts } from "./src/handlers/getSts.ts";
 import { handleResolveUrl } from "./src/handlers/resolveUrl.ts";
 import { withMetrics } from "./src/middleware.ts";
+import { withPlayer } from "./src/middleware/player.ts";
 import { withValidation } from "./src/validation.ts";
 import { registry } from "./src/metrics.ts";
 import type { ApiRequest, RequestContext } from "./src/types.ts";
@@ -82,7 +83,7 @@ async function baseHandler(req: Request): Promise<Response> {
     }
     const ctx: RequestContext = { req, body };
 
-    const composedHandler = withValidation(withMetrics(handle));
+    const composedHandler = withValidation(withMetrics(withPlayer(handle)));
     return await composedHandler(ctx);
 }
 

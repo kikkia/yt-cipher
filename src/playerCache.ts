@@ -2,7 +2,7 @@ import { crypto } from "https://deno.land/std@0.224.0/crypto/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { cacheSize, playerScriptFetches } from "./metrics.ts";
-import { extractPlayerId } from "./utils.ts";
+import { PlayerScript } from "./player.ts";
 
 const ignorePlayerScriptRegion = Deno.env.get("IGNORE_SCRIPT_REGION") === "true";
 
@@ -32,11 +32,12 @@ function resolveCacheHome(): string {
 export const CACHE_HOME = resolveCacheHome();
 export const CACHE_DIR = join(CACHE_HOME, 'yt-cipher', 'player_cache');
 
-export async function getPlayerFilePath(playerUrl: string): Promise<string> {
+export async function getPlayerFilePath(playerScript: PlayerScript): Promise<string> {
+    const playerUrl = playerScript.toUrl();
     let cacheKey: string;
     if (ignorePlayerScriptRegion) {
         // I have not seen any scripts that differ between regions so this should be safe
-        cacheKey = extractPlayerId(playerUrl);
+        cacheKey = playerScript.id;
     } else {
         // This hash of the player script url will mean that diff region scripts are treated as unequals, even for the same version #
         // I dont think I have ever seen 2 scripts of the same version differ between regions but if they ever do this will catch it
@@ -55,7 +56,7 @@ export async function getPlayerFilePath(playerUrl: string): Promise<string> {
         if (error instanceof Deno.errors.NotFound) {
             console.log(`Cache miss for player: ${playerUrl}. Fetching...`);
             const response = await fetch(playerUrl);
-            playerScriptFetches.labels({ player_url: playerUrl, status: response.statusText }).inc();
+            playerScriptFetches.labels({ player_url: playerUrl, status: String(response.status) }).inc();
             if (!response.ok) {
                 throw new Error(`Failed to fetch player from ${playerUrl}: ${response.statusText}`);
             }

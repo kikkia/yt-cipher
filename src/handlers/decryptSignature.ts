@@ -2,12 +2,12 @@ import { getSolvers } from "../solver.ts";
 import type { RequestContext, SignatureRequest, SignatureResponse } from "../types.ts";
 
 export async function handleDecryptSignature(ctx: RequestContext): Promise<Response> {
-    const { encrypted_signature, n_param, player_url } = ctx.body as SignatureRequest;
+    const { encrypted_signature, n_param } = ctx.body as SignatureRequest;
 
-    const solvers = await getSolvers(player_url);
+    const solvers = await getSolvers(ctx.playerScript!);
 
     if (!solvers) {
-        console.error("Failed to generate solvers from player script for player: " + player_url);
+        console.error("Failed to generate solvers from player script for player: " + ctx.playerScript?.toUrl());
         return new Response(JSON.stringify({ error: "Failed to generate solvers from player script" }), { status: 500, headers: { "Content-Type": "application/json" } });
     }
 
