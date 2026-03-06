@@ -7,6 +7,7 @@ export enum PlayerVariant {
     TV = 'TV',
     TV_ES6 = 'TV_ES6',
     PHONE = 'PHONE',
+    EMBED = "EMBED",
 }
 
 class VariantDetail {
@@ -37,6 +38,7 @@ const playerVariantDetails: VariantDetail[] = [
     new VariantDetail(PlayerVariant.PHONE, /^player-plasma-ias-phone-([a-zA-Z_]+)\.vflset\/base\.js$/, (region) => `player-plasma-ias-phone-${region}.vflset/base.js`),
     new VariantDetail(PlayerVariant.TV, /^tv-player-ias\.vflset\/tv-player-ias\.js$/, () => `tv-player-ias.vflset/tv-player-ias.js`),
     new VariantDetail(PlayerVariant.TV_ES6, /^tv-player-es6\.vflset\/tv-player-es6\.js$/, () => `tv-player-es6.vflset/tv-player-es6.js`),
+    new VariantDetail(PlayerVariant.EMBED, /^player_embed\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_ias.vflset/${region}/base.js`),
 ];
 
 const overridePlayerId = Deno.env.get('OVERRIDE_PLAYER_ID');
