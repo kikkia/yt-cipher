@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y git
 #     cd ..
 
 # Temp use a new IAS fixed sig extractor
-ARG EJS_COMMIT=aa11ae693e4fdc32d4dc17d9a80c6fb1eeb35e19
+ARG EJS_COMMIT=2aa16f2ecb1629921eb17a5c4872827bc09a9edb
 RUN git init ejs && \
     cd ejs && \
     git remote add origin https://github.com/kikkia/ejs.git && \
