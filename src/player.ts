@@ -41,6 +41,8 @@ const playerVariantDetails: VariantDetail[] = [
     new VariantDetail(PlayerVariant.EMBED, /^player_embed\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_ias.vflset/${region}/base.js`),
 ];
 
+import { playerScriptOverwrites } from "./metrics.ts";
+
 const overridePlayerId = Deno.env.get('OVERRIDE_PLAYER_ID');
 // const overridePlayerVariant = Deno.env.get('OVERRIDE_PLAYER_VARIANT');
 // TEMP: Hack to force IAS script till new fix
@@ -102,12 +104,14 @@ export function getPlayerScript(playerUrl: string): PlayerScript {
     let script = PlayerScript.fromUrl(playerUrl);
 
     if (overridePlayerId) {
+        playerScriptOverwrites.labels({ type: "id", source: script.id, forced: overridePlayerId }).inc();
         script = script.withId(overridePlayerId);
     }
 
     if (overridePlayerVariant) {
         const variant = PlayerVariant[overridePlayerVariant as keyof typeof PlayerVariant];
         if (variant) {
+            playerScriptOverwrites.labels({ type: "variant", source: script.variant, forced: overridePlayerVariant }).inc();
             script = script.withVariant(variant);
         }
     }

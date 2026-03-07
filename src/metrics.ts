@@ -39,6 +39,13 @@ export const endpointLatency = Histogram.with({
     registry: [registry],
 });
 
+export const playerScriptOverwrites = Counter.with({
+    name: "player_script_overwrites_total",
+    help: "Total number of player script overwrites, e.g. when forcing a specific player version.",
+    labels: ["type", "source", "forced"],
+    registry: [registry],
+});
+
 export const cacheSize = Gauge.with({
     name: "cache_size",
     help: "The number of items in the cache.",
