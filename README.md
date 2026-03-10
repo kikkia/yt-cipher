@@ -83,9 +83,11 @@ Environment Variables:
 - `HOST` - Sets the hostname for the deno server, default: `0.0.0.0`
 - `PREPROCESSED_CACHE_SIZE` - Max size of processed player script cache. Lower to consume less memory. default: `150`
 - `IGNORE_SCRIPT_REGION` - When set to `true`, this flag modifies the caching behavior of player scripts to disregard regional differences. If your yt-cipher needs to decipher for multiple regions, this can help with memory usage and response time. Default is `false`.
-
 > [!WARNING]
 > While no functional differences have been seen between regional scripts in limited testing, a future YouTube change could break yt-cipher. If you encounter any playback issues, please disable this flag and open an issue.
+
+- `OVERRIDE_PLAYER_ID` - Forces all requests to use a specific YouTube player script ID (eg. 1a2b3c4d).
+- `OVERRIDE_PLAYER_VARIANT` - Forces all requests to use a specific player variant. Available variants: `IAS`, `IAS_TCC`, `IAS_TCE`, `ES5`, `ES6`, `TV`, `TV_ES6`, `PHONE`, `EMBED`.
 
 ## IPv6 Support
 

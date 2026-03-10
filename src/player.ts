@@ -15,7 +15,7 @@ class VariantDetail {
         public readonly variant: PlayerVariant,
         private readonly matchRegex: RegExp,
         private readonly buildTemplate: (region: string) => string,
-    ) {}
+    ) { }
 
     match(path: string): { region: string | null } | null {
         const result = path.match(this.matchRegex);
@@ -44,9 +44,7 @@ const playerVariantDetails: VariantDetail[] = [
 import { playerScriptOverwrites } from "./metrics.ts";
 
 const overridePlayerId = Deno.env.get('OVERRIDE_PLAYER_ID');
-// const overridePlayerVariant = Deno.env.get('OVERRIDE_PLAYER_VARIANT');
-// TEMP: Hack to force IAS script till new fix
-const overridePlayerVariant = 'IAS';
+const overridePlayerVariant = Deno.env.get('OVERRIDE_PLAYER_VARIANT');
 
 
 export class PlayerScript {
