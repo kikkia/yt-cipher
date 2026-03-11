@@ -56,9 +56,9 @@ Clone the repository and patch the `ejs` dependency:
 ```bash
 git clone https://github.com/kikkia/yt-cipher.git
 cd yt-cipher
-git clone https://github.com/yt-dlp/ejs.git
+git clone https://github.com/kikkia/ejs.git
 cd ejs
-git checkout 5bc9811c7a2f64a88279d2b90884df2160e51b34
+git checkout 2aa16f2ecb1629921eb17a5c4872827bc09a9edb
 cd ..
 deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 ```
