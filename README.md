@@ -23,6 +23,9 @@ WARNING: Ratelimit of 10 requests/sec (should be fine up to 1000+ active players
 
 ## Hosting yourself
 
+> [!NOTE]
+> Right now only the `IAS` script variants consistantly work. It is reccomended to run with the `OVERRIDE_SCRIPT_VARIANT` env var set to `IAS`
+
 ### Docker/Docker-compose
 
 The easiest way to host this service is with Docker (NOTE: Default password in the docker-compose.yml is "test")
