@@ -8,6 +8,8 @@ services:
     container_name: ejs_signature_api
     ports:
       - "8001:8001"
-    # environment: # UNCOMMENT THIS LINE AND API_TOKEN TO ADD A PASSWORD
+    environment: 
+      - OVERRIDE_PLAYER_VARIANT=IAS
+    # UNCOMMENT API_TOKEN TO ADD A PASSWORD
     #   - API_TOKEN=test
     restart: unless-stopped
