@@ -9,5 +9,5 @@ services:
     ports:
       - "8001:8001"
     # environment: # UNCOMMENT THIS LINE AND API_TOKEN TO ADD A PASSWORD
-    #   - API_TOKEN=test
+    #   - OVERRIDE_PLAYER_ID=140dafda
     restart: unless-stopped
