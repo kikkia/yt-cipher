@@ -4,22 +4,13 @@ WORKDIR /usr/src/app
 
 RUN apt-get update && apt-get install -y git
 
-# ARG EJS_COMMIT=5bc9811c7a2f64a88279d2b90884df2160e51b34
-# RUN git init ejs && \
-#     cd ejs && \
-#     git remote add origin https://github.com/yt-dlp/ejs.git && \
-#     git fetch --depth 1 origin "$EJS_COMMIT" && \
-#     git checkout --detach FETCH_HEAD && \
-#     cd ..
-
-# Temp use a new IAS fixed sig extractor
-ARG EJS_COMMIT=2aa16f2ecb1629921eb17a5c4872827bc09a9edb
+ARG EJS_COMMIT=cd4e87f52e87ab6d8b318fd3a817adda6fafa8dc
 RUN git init ejs && \
-    cd ejs && \
-    git remote add origin https://github.com/kikkia/ejs.git && \
-    git fetch --depth 1 origin "$EJS_COMMIT" && \
-    git checkout --detach FETCH_HEAD && \
-    cd ..
+     cd ejs && \
+     git remote add origin https://github.com/yt-dlp/ejs.git && \
+     git fetch --depth 1 origin "$EJS_COMMIT" && \
+     git checkout --detach FETCH_HEAD && \
+     cd ..
 
 COPY scripts/patch-ejs.ts ./scripts/patch-ejs.ts
 RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
