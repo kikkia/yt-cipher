@@ -4,10 +4,13 @@ export enum PlayerVariant {
     IAS_TCE = 'IAS_TCE',
     ES5 = 'ES5',
     ES6 = 'ES6',
+    ES6_TCC = 'ES6_TCC',
+    ES6_TCE = 'ES6_TCE',
     TV = 'TV',
     TV_ES6 = 'TV_ES6',
     PHONE = 'PHONE',
     EMBED = "EMBED",
+    HOUSE = "HOUSE",
 }
 
 class VariantDetail {
@@ -35,10 +38,13 @@ const playerVariantDetails: VariantDetail[] = [
     new VariantDetail(PlayerVariant.IAS_TCE, /^player_ias_tce\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_ias_tce.vflset/${region}/base.js`),
     new VariantDetail(PlayerVariant.ES5, /^player_es5\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_es5.vflset/${region}/base.js`),
     new VariantDetail(PlayerVariant.ES6, /^player_es6\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_es6.vflset/${region}/base.js`),
+    new VariantDetail(PlayerVariant.ES6_TCC, /^player_es6_tcc\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_es6_tcc.vflset/${region}/base.js`),
+    new VariantDetail(PlayerVariant.ES6_TCE, /^player_es6_tce\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_es6_tce.vflset/${region}/base.js`),
     new VariantDetail(PlayerVariant.PHONE, /^player-plasma-ias-phone-([a-zA-Z_]+)\.vflset\/base\.js$/, (region) => `player-plasma-ias-phone-${region}.vflset/base.js`),
     new VariantDetail(PlayerVariant.TV, /^tv-player-ias\.vflset\/tv-player-ias\.js$/, () => `tv-player-ias.vflset/tv-player-ias.js`),
     new VariantDetail(PlayerVariant.TV_ES6, /^tv-player-es6\.vflset\/tv-player-es6\.js$/, () => `tv-player-es6.vflset/tv-player-es6.js`),
     new VariantDetail(PlayerVariant.EMBED, /^player_embed\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `player_ias.vflset/${region}/base.js`),
+    new VariantDetail(PlayerVariant.HOUSE, /^house_brand_player\.vflset\/([a-zA-Z_]+)\/base\.js$/, (region) => `house_brand_player.vflset/${region}/base.js`),
 ];
 
 import { playerScriptOverwrites } from "./metrics.ts";
