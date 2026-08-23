@@ -1,6 +1,7 @@
 # yt-cipher
 
-An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs).
+An http api wrapper for [yt-dlp/ejs](https://github.com/yt-dlp/ejs), plus a built-in WebPO
+(`poToken`) generator.
 
 # Getting Started
 
@@ -67,7 +68,7 @@ deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 ```
 
 ```bash
-deno run --allow-net --allow-read --allow-write --allow-env server.ts
+deno run --allow-net --allow-read --allow-write --allow-env --allow-sys server.ts
 ```
 NOTE: If using an `.env` file then also add the `--env` flag
 
@@ -91,6 +92,13 @@ Environment Variables:
 
 - `OVERRIDE_PLAYER_ID` - Forces all requests to use a specific YouTube player script ID (eg. 1a2b3c4d).
 - `OVERRIDE_PLAYER_VARIANT` - Forces all requests to use a specific player variant. Available variants: `IAS`, `IAS_TCC`, `IAS_TCE`, `ES5`, `ES6`, `TV`, `TV_ES6`, `PHONE`, `EMBED`.
+
+PoToken (`/generate`) variables:
+- `POT_WORKERS` - Number of dedicated PoToken workers. Each one holds its own BotGuard VM, so more workers means more memory, not more throughput. Default: `1`
+- `POT_CACHE_SIZE` - Max entries per PoToken cache (one for video-bound, one for visitor-bound). Default: `100`
+- `POT_MAX_PENDING` - Max PoToken requests in flight before returning `503`. Default: `256`
+- `POT_REQUEST_TIMEOUT` - Per-request PoToken timeout in ms. Default: `30000`
+- `VISITOR_TTL` - How long fetched visitor data (and its PoToken) is reused, in ms. Default: `21600000` (6h)
 
 ## IPv6 Support
 
@@ -218,3 +226,89 @@ Resolves a raw stream URL by handling the signature and n-parameter decryption, 
   "resolved_url": "..."
 }
 ```
+
+### `POST /generate`
+
+Mints a WebPO token (`poToken`) by solving YouTube's BotGuard challenge. This is the `remotePot`
+half of the youtube-source config; it needs no `player_url`.
+
+**Request Body:**
+
+```json
+{
+  "content_binding": "dQw4w9WgXcQ",
+  "coldToken": false
+}
+```
+
+- `content_binding` (string, optional): What to bind the token to, usually an 11 character video ID. Omit it and the service fetches its own visitor data and binds to that.
+- `coldToken` (boolean, optional): When `true`, also returns a cold start token for the same binding.
+
+**Successful Response:**
+
+```json
+{
+  "poToken": "...",
+  "contentBinding": "dQw4w9WgXcQ",
+  "coldStartToken": "..."
+}
+```
+
+`coldStartToken` is only present when `coldToken` was `true`, and is `null` if the binding is too
+long to encode.
+
+Video-bound tokens are cached for 150s and visitor-bound ones for `VISITOR_TTL`. An explicitly
+supplied non-video binding is never cached. Errors are `503` when overloaded, `504` on timeout,
+`500` otherwise.
+
+**Example `curl` request:**
+
+```bash
+curl -X POST http://localhost:8001/generate \
+-H "Content-Type: application/json" \
+-H "Authorization: your_secret_token" \
+-d '{"content_binding": "dQw4w9WgXcQ"}'
+```
+
+### `POST /decode_cold_start`
+
+Decodes a cold start token. Local only, no network calls.
+
+**Request Body:**
+
+```json
+{
+  "token": "..."
+}
+```
+
+**Successful Response:**
+
+```json
+{
+  "contentBinding": "dQw4w9WgXcQ",
+  "timestamp": 1787468875,
+  "unknownVal": 0,
+  "clientState": 1,
+  "keys": [42, 39],
+  "date": "2026-08-23T07:07:55.000Z"
+}
+```
+
+## Tests
+
+```bash
+deno test --allow-read src/potoken/potoken_test.ts        # offline, cold start codec
+deno run -A test/potoken_playback.ts http://localhost:8001 # live, needs a running server
+```
+
+The playback test is the only one that proves a minted `poToken` is one YouTube accepts: it mints
+for MWEB, WEB_REMIX and TV_SIMPLY, deciphers a real stream URL for each and range-requests it. It
+runs YouTube's player script via `new Function`, same as the server does.
+
+## Credits
+The PoToken support in `src/potoken/` is a port of
+[ashton045/webpo-generator](https://github.com/ashton045/webpo-generator) (LGPL-3.0-or-later, see
+`src/potoken/LICENSE`), whose BotGuard attestation logic comes from
+[LuanRT/BgUtils](https://github.com/LuanRT/BgUtils). The wire format of `/generate` and
+`/decode_cold_start` is unchanged, so either service works with the same youtube-source config.

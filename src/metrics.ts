@@ -61,3 +61,10 @@ export const playerScriptFetches = Counter.with({
     labels: ["status"],
     registry: [registry],
 });
+
+export const potokenGenerations = Counter.with({
+    name: "potoken_generations_total",
+    help: "Total number of PoToken requests by outcome.",
+    labels: ["outcome"],
+    registry: [registry],
+});

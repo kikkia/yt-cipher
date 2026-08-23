@@ -46,7 +46,22 @@ export interface Task {
     reject: (error: any) => void;
 }
 
-export type ApiRequest = SignatureRequest | StsRequest | ResolveUrlRequest;
+export interface PotRequest {
+    content_binding?: string;
+    coldToken?: boolean;
+}
+
+export interface PotResponse {
+    poToken: string;
+    contentBinding: string;
+    coldStartToken?: string | null;
+}
+
+export interface ColdStartRequest {
+    token: string;
+}
+
+export type ApiRequest = SignatureRequest | StsRequest | ResolveUrlRequest | PotRequest | ColdStartRequest;
 
 // Parsing into this context helps avoid multi copies of requests
 // since request body can only be read once. 

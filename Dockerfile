@@ -22,8 +22,9 @@ COPY . .
 RUN deno compile \
     --no-check \
     --output server \
-    --allow-net --allow-read --allow-write --allow-env \
+    --allow-net --allow-read --allow-write --allow-env --allow-sys \
     --include worker.ts \
+    --include src/potoken/worker.ts \
     server.ts
 
 RUN mkdir -p /usr/src/app/player_cache && \

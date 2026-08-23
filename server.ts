@@ -4,6 +4,9 @@ import { initializeCache } from "./src/playerCache.ts";
 import { handleDecryptSignature } from "./src/handlers/decryptSignature.ts";
 import { handleGetSts } from "./src/handlers/getSts.ts";
 import { handleResolveUrl } from "./src/handlers/resolveUrl.ts";
+import { handleGeneratePot } from "./src/handlers/generatePot.ts";
+import { handleDecodeColdStart } from "./src/handlers/decodeColdStart.ts";
+import { initializePotWorkers } from "./src/potoken/pool.ts";
 import { withMetrics } from "./src/middleware.ts";
 import { withPlayer } from "./src/middleware/player.ts";
 import { withValidation } from "./src/validation.ts";
@@ -64,6 +67,7 @@ async function baseHandler(req: Request): Promise<Response> {
     }
 
     let handle: (ctx: RequestContext) => Promise<Response>;
+    let needsPlayer = true;
 
     if (pathname === '/decrypt_signature') {
         handle = handleDecryptSignature;
@@ -71,6 +75,12 @@ async function baseHandler(req: Request): Promise<Response> {
         handle = handleGetSts;
     } else if (pathname === '/resolve_url') {
         handle = handleResolveUrl;
+    } else if (pathname === '/generate') {
+        handle = handleGeneratePot;
+        needsPlayer = false;
+    } else if (pathname === '/decode_cold_start') {
+        handle = handleDecodeColdStart;
+        needsPlayer = false;
     } else {
         return new Response(JSON.stringify({ error: 'Not Found' }), { status: 404, headers: { "Content-Type": "application/json" } });
     }
@@ -83,7 +93,8 @@ async function baseHandler(req: Request): Promise<Response> {
     }
     const ctx: RequestContext = { req, body };
 
-    const composedHandler = withValidation(withPlayer(withMetrics(handle)));
+    const metered = withMetrics(handle);
+    const composedHandler = withValidation(needsPlayer ? withPlayer(metered) : metered);
     return await composedHandler(ctx);
 }
 
@@ -94,6 +105,7 @@ const host = Deno.env.get("HOST") || '0.0.0.0';
 
 await initializeCache();
 initializeWorkers();
+initializePotWorkers();
 
 console.log(`Server listening on http://${host}:${port}`);
 await serve(handler, { port: Number(port), hostname: host });

@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: yt-cipher API
-  description: A web service for solving YouTube's cipher challenges.
+  description: A web service for solving YouTube's cipher challenges and minting WebPO tokens.
   version: 1.0.0
 servers:
   - url: /
@@ -86,3 +86,75 @@ paths:
                 properties:
                   resolved_url:
                     type: string
+  /generate:
+    post:
+      summary: Mints a WebPO token (poToken)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content_binding:
+                  type: string
+                  description: Usually an 11 character video ID. Omit to bind to fetched visitor data.
+                coldToken:
+                  type: boolean
+                  description: Also return a cold start token for the same binding.
+      responses:
+        '200':
+          description: Generated PoToken
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  poToken:
+                    type: string
+                  contentBinding:
+                    type: string
+                  coldStartToken:
+                    type: string
+                    nullable: true
+        '503':
+          description: Too many PoToken requests in flight
+        '504':
+          description: Generation timed out
+  /decode_cold_start:
+    post:
+      summary: Decodes a cold start token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Decoded cold start token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contentBinding:
+                    type: string
+                  timestamp:
+                    type: integer
+                  unknownVal:
+                    type: integer
+                  clientState:
+                    type: integer
+                  keys:
+                    type: array
+                    items:
+                      type: integer
+                  date:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid cold start token
