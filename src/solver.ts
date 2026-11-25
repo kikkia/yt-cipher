@@ -4,7 +4,7 @@ import { preprocessedCache } from "./preprocessedCache.ts";
 import { solverCache } from "./solverCache.ts";
 import { getFromPrepared } from "../ejs/src/yt/solver/solvers.ts";
 import type { Solvers } from "./types.ts";
-import { workerErrors } from "./metrics.ts";
+import { sanitizeLabelValue, workerErrors } from "./metrics.ts";
 import { PlayerScript } from "./player.ts";
 
 export async function getSolvers(playerScript: PlayerScript): Promise<Solvers | null> {
@@ -22,7 +22,7 @@ export async function getSolvers(playerScript: PlayerScript): Promise<Solvers | 
         try {
             preprocessedPlayer = await execInPool(rawPlayer);
         } catch (e) {
-            const message = e instanceof Error ? e.message : String(e);
+            const message = sanitizeLabelValue(e instanceof Error ? e.message : String(e), 120);
             workerErrors.labels({ player_id: playerScript.id, player_type: playerScript.variant, message }).inc();
             throw e;
         }

@@ -1,4 +1,4 @@
-import { endpointHits, responseCodes, userAgentRequests } from "./metrics.ts";
+import { endpointHits, responseCodes, sanitizeLabelValue, userAgentRequests } from "./metrics.ts";
 import type { RequestContext } from "./types.ts";
 
 type Next = (ctx: RequestContext) => Promise<Response>;
@@ -8,7 +8,7 @@ export function withMetrics(handler: Next): Next {
         const { pathname } = new URL(ctx.req.url);
         const playerId = ctx.playerScript?.id ?? "unknown";
         const playerType = ctx.playerScript?.variant ?? "unknown";
-        const userAgent = ctx.req.headers.get("User-Agent") ?? "unknown";
+        const userAgent = sanitizeLabelValue(ctx.req.headers.get("User-Agent") ?? "unknown");
 
         endpointHits.labels({ pathname, player_id: playerId, player_type: playerType }).inc();
         userAgentRequests.labels({ user_agent: userAgent }).inc();

@@ -51,7 +51,7 @@ async function baseHandler(req: Request): Promise<Response> {
 
     if (pathname === '/metrics') {
         return new Response(registry.metrics(), {
-            headers: { "Content-Type": "text/plain" },
+            headers: { "Content-Type": "text/plain; version=0.0.4; charset=utf-8" },
         });
     }
 

@@ -8,7 +8,8 @@ self.onmessage = (e: MessageEvent<string>) => {
         self.postMessage({
             type: 'error',
             data: {
-                message: error,
+                message: error instanceof Error ? error.message : String(error),
+                stack: error instanceof Error ? error.stack : undefined,
             }
         });
     }

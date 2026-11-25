@@ -61,8 +61,8 @@ export class PlayerScript {
         public readonly variant: PlayerVariant,
         public readonly region: string | null,
     ) {
-        if (id.length !== 8) {
-            throw new Error(`Invalid player ID: ${id}. Must be 8 characters long.`);
+        if (!/^[a-zA-Z0-9_-]{8}$/.test(id)) {
+            throw new Error(`Invalid player ID: ${id}. Must be 8 alphanumeric characters.`);
         }
     }
 

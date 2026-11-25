@@ -91,6 +91,7 @@ Environment Variables:
 
 - `OVERRIDE_PLAYER_ID` - Forces all requests to use a specific YouTube player script ID (eg. 1a2b3c4d).
 - `OVERRIDE_PLAYER_VARIANT` - Forces all requests to use a specific player variant. Available variants: `IAS`, `IAS_TCC`, `IAS_TCE`, `ES5`, `ES6`, `TV`, `TV_ES6`, `PHONE`, `EMBED`.
+- `METRICS_STALE_TTL_HOURS` - Hours of inactivity after which stale Prometheus series (e.g. rotated `player_id`s and inactive `user_agent`s) are pruned from `/metrics`. Default: `24`. Set to `0` to disable expiry.
 
 ## IPv6 Support
 
