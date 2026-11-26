@@ -24,6 +24,26 @@ const VARIANTS: PlayerVariant[] = [
     PlayerVariant.PHONE,
 ];
 
+const TCL_VARIANTS: PlayerVariant[] = [
+    PlayerVariant.IAS_TCL,
+    PlayerVariant.ES6_TCL,
+    PlayerVariant.TV_TCL,
+    PlayerVariant.TV_ES6_TCL,
+    PlayerVariant.PHONE_TCL,
+    PlayerVariant.PLASMA_ES6_TCL,
+    PlayerVariant.EMBED_TCL,
+    PlayerVariant.EMBED_ES6_TCL,
+];
+
+const EXPECTED_TCL_VECTORS: Record<string, { n?: { input: string; expected: string }[]; sig?: { input: string; expected: string }[] }> = {
+    "b485e332": {
+        n: [{ input: "rYKKd90cGmViBQaX", expected: "vSwisZogGk3ro4" }],
+    },
+    "92eef845": {
+        n: [{ input: "rYKKd90cGmViBQaX", expected: "Tk5OqnIAYVzPJeT" }],
+    },
+};
+
 const SAMPLE_N = "zyfc6LXJJ_Fc8A16e";
 const SAMPLE_SIG = "GJfQdSswRgIhAOXssbbKYmoLtN8NkbnqZ-y_JiPAnmhaLG2c79kb8BAlAiEAy01T8bzhq5txK6CKaEr27cVdmDw8ZWU1D8fPRMiERkQ==";
 
@@ -130,6 +150,67 @@ for (const playerId of BREAKING_PLAYERS) {
 
             await t.step(`${playerId} [variant consistency]`, () => {
                 assert(solvedByVariant.size > 0, `No variants succeeded for ${playerId}`);
+                const entries = [...solvedByVariant.entries()];
+                const [baseVariant, baseResult] = entries[0];
+                for (const [variant, result] of entries.slice(1)) {
+                    assertEquals(
+                        result.n,
+                        baseResult.n,
+                        `n mismatch between ${baseVariant} and ${variant} for ${playerId}`,
+                    );
+                    assertEquals(
+                        result.sig,
+                        baseResult.sig,
+                        `sig mismatch between ${baseVariant} and ${variant} for ${playerId}`,
+                    );
+                }
+            });
+        },
+    });
+}
+
+for (const playerId of Object.keys(EXPECTED_TCL_VECTORS)) {
+    Deno.test({
+        name: `player ${playerId} (tcl)`,
+        async fn(t) {
+            const solvedByVariant = new Map<PlayerVariant, { n: string; sig: string }>();
+
+            for (const variant of TCL_VARIANTS) {
+                await t.step(`${playerId} [${variant}]`, async () => {
+                    const raw = await loadPlayer(playerId, variant);
+                    if (raw === null) {
+                        console.log(`Skipping unavailable variant ${playerId} [${variant}] (404)`);
+                        return;
+                    }
+
+                    const preprocessed = preprocessPlayer(raw);
+                    const solvers = getFromPrepared(preprocessed);
+
+                    assert(typeof solvers.n === "function", `Expected n solver function for ${playerId} [${variant}]`);
+                    assert(typeof solvers.sig === "function", `Expected sig solver function for ${playerId} [${variant}]`);
+
+                    const solvedN = solvers.n(SAMPLE_N);
+                    const solvedSig = solvers.sig(SAMPLE_SIG);
+
+                    assert(typeof solvedN === "string" && solvedN.length > 0, `Empty n result for ${playerId} [${variant}]`);
+                    assertNotEquals(solvedN, SAMPLE_N, `n solver returned unchanged input for ${playerId} [${variant}]`);
+
+                    assert(typeof solvedSig === "string" && solvedSig.length > 0, `Empty sig result for ${playerId} [${variant}]`);
+                    assertNotEquals(solvedSig, SAMPLE_SIG, `sig solver returned unchanged input for ${playerId} [${variant}]`);
+
+                    const expected = EXPECTED_TCL_VECTORS[playerId];
+                    if (expected?.n) {
+                        for (const tc of expected.n) {
+                            assertEquals(solvers.n(tc.input), tc.expected, `n vector mismatch for ${playerId} [${variant}]`);
+                        }
+                    }
+
+                    solvedByVariant.set(variant, { n: solvedN, sig: solvedSig });
+                });
+            }
+
+            await t.step(`${playerId} [tcl variant consistency]`, () => {
+                assert(solvedByVariant.size > 0, `No tcl variants succeeded for ${playerId}`);
                 const entries = [...solvedByVariant.entries()];
                 const [baseVariant, baseResult] = entries[0];
                 for (const [variant, result] of entries.slice(1)) {

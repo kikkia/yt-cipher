@@ -61,7 +61,7 @@ git clone https://github.com/kikkia/yt-cipher.git
 cd yt-cipher
 git clone https://github.com/yt-dlp/ejs.git
 cd ejs
-git checkout d48c6303a5a6455a42ef9e0b445149cadea51279
+git checkout c47fb1b54215afa4f6a3d557ad65bb724022f6ba
 cd ..
 deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 ```
